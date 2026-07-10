@@ -5,8 +5,8 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Ardian Bagus — Portfolio</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="anonymous">
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:ital,wght@0,300..800;1,300..800&display=swap" rel="stylesheet">
 <style>
   :root{
     --void:#060b16;
@@ -27,7 +27,8 @@
     color:var(--ice);
     font-family:'Plus Jakarta Sans', sans-serif;
     -webkit-font-smoothing:antialiased;
-    overflow-x:hidden;
+    overflow-x:hidden;   /* fallback untuk browser lama */
+    overflow-x:clip;     /* 'hidden' bisa mematikan position:sticky; 'clip' aman */
   }
   a{color:inherit; text-decoration:none;}
   ::selection{background:var(--signal); color:var(--void);}
@@ -45,8 +46,8 @@
   }
 
   .eyebrow{font-size:.72rem; letter-spacing:.22em; text-transform:uppercase; color:var(--signal-bright); font-weight:700;}
-  .display{font-family:'Bebas Neue', sans-serif; letter-spacing:.02em; line-height:.92; font-weight:400;}
-  .mono{font-family:'JetBrains Mono', monospace;}
+  .display{font-family:'Plus Jakarta Sans', sans-serif; letter-spacing:.02em; line-height:.92; font-weight:400;}
+  .mono{font-family:'Plus Jakarta Sans', sans-serif;}
 
   /* ---------------- NAV ---------------- */
   #nav{
@@ -62,7 +63,7 @@
     padding:1.05rem clamp(1.25rem, 4vw, 3.5rem);
     box-shadow:0 1px 0 rgba(255,255,255,.06);
   }
-  .logo{font-family:'Bebas Neue', sans-serif; font-size:1.5rem; letter-spacing:.06em; color:var(--ice);}
+  .logo{font-family:'Plus Jakarta Sans', sans-serif; font-size:1.5rem; letter-spacing:.06em; color:var(--ice);}
   .logo span{color:var(--signal-bright);}
   .nav-links{display:flex; gap:clamp(1.2rem,3vw,2.4rem); list-style:none;}
   .nav-links a{font-size:.82rem; font-weight:600; letter-spacing:.04em; text-transform:uppercase; color:var(--mist); transition:color .2s ease;}
@@ -80,8 +81,8 @@
     position:absolute; inset:0;
     background-image:var(--hero-photo-url);
     background-position:center center; background-size:cover; background-repeat:no-repeat;
-    -webkit-mask-image:linear-gradient(110deg, transparent 0%, transparent 30%, rgba(0,0,0,.6) 52%, #000 72%);
-            mask-image:linear-gradient(110deg, transparent 0%, transparent 30%, rgba(0,0,0,.6) 52%, #000 72%);
+    -webkit-mask-image:radial-gradient(circle at center, #000 30%, rgba(0,0,0,0.3) 80%, transparent 100%);
+            mask-image:radial-gradient(circle at center, #000 30%, rgba(0,0,0,0.3) 80%, transparent 100%);
     mix-blend-mode:luminosity;
     opacity:.6;
   }
@@ -92,7 +93,7 @@
   }
   .hero-content{position:relative; z-index:3; max-width:760px;}
   .hero-content .eyebrow{margin-bottom:1rem; display:block;}
-  .hero-title{font-size:clamp(3.2rem, 9vw, 6.4rem); color:var(--ice); margin-bottom:1.1rem;}
+  .hero-title{font-size:clamp(2.6rem, 9vw, 6.4rem); color:var(--ice); margin-bottom:1.1rem;}
   .hero-tagline{font-size:clamp(1rem,1.6vw,1.2rem); color:var(--mist); max-width:46ch; line-height:1.55; margin-bottom:2.1rem;}
   .hero-actions{display:flex; gap:.85rem; flex-wrap:wrap;}
   .btn{display:inline-flex; align-items:center; gap:.55rem; padding:.85rem 1.6rem; border-radius:5px; font-weight:700; font-size:.92rem; cursor:pointer; border:none; transition:transform .18s ease, background .18s ease, border-color .18s ease;}
@@ -104,11 +105,19 @@
 
   /* ---------------- FILTER BAR ---------------- */
   .filter-bar{
-    display:flex; gap:.6rem; flex-wrap:wrap;
-    padding:0 clamp(1.25rem,4vw,3.5rem); margin-bottom:1.8rem;
+    display:flex; gap:.7rem; flex-wrap:wrap;
+    /* Menempel di bawah nav saat halaman di-scroll.
+       "top" = perkiraan tinggi nav dalam keadaan scrolled (~62px). */
+    position:sticky; top:56px; z-index:90;
+    padding:.9rem clamp(1.25rem,4vw,3.5rem); margin-bottom:1.4rem;
+    background:rgba(6,11,22,.92);
+    backdrop-filter:blur(10px);
+    -webkit-backdrop-filter:blur(10px);
+    /* Supaya klik "Work" di nav tidak menyembunyikan bar di balik nav */
+    scroll-margin-top:70px;
   }
   .filter-pill{
-    padding:.5rem 1.1rem; border-radius:999px; font-size:.8rem; font-weight:700;
+    padding:.7rem 1.5rem; border-radius:999px; font-size:.92rem; font-weight:700;
     background:transparent; border:1px solid rgba(234,240,255,.22); color:var(--mist);
     cursor:pointer; transition:all .2s ease;
   }
@@ -126,42 +135,80 @@
   .row-wrap:hover .row-arrow{opacity:1;}
   .row-arrow.right{right:0; left:auto; background:linear-gradient(to left, var(--void) 15%, transparent);}
 
-  .card{
-    flex:0 0 auto; width:min(78vw, 300px); aspect-ratio:16/9; border-radius:7px;
-    position:relative; cursor:pointer; overflow:hidden;
-    transition:transform .28s cubic-bezier(.2,.8,.2,1), box-shadow .28s ease, z-index 0s;
+  .card {
+    flex: 0 0 auto; 
+    /* Desktop: tetap 30vw (ukuran yang sekarang, tidak berubah).
+       HP: tidak boleh lebih kecil dari 280px (atau 85vw di layar sangat sempit).
+       Monitor sangat besar: berhenti membesar di 620px. */
+    width: clamp(min(280px, 85vw), 30vw, 620px);
+    /* Menjadikan kartu sebagai "container" supaya font di dalamnya
+       bisa ikut ukuran kartu (unit cqw di bawah) */
+    container-type: inline-size;
+    
+    aspect-ratio: 16/9; 
+    border-radius: 7px;
+    position: relative; 
+    cursor: pointer; 
+    overflow: hidden;
+    transition: transform .28s cubic-bezier(.2,.8,.2,1), box-shadow .28s ease, z-index 0s;
   }
-  .card:hover, .card:focus-visible{
-    transform:scale(1.09) translateY(-6px);
-    box-shadow:0 24px 45px -12px rgba(0,0,0,.6), 0 0 0 1px rgba(234,240,255,.15);
-    z-index:10;
+  
+  .card:hover, .card:focus-visible {
+    transform: scale(1.04) translateY(-6px); /* Sedikit dikurangi scale-nya agar saat besar tidak terlalu agresif */
+    box-shadow: 0 24px 45px -12px rgba(0,0,0,.6), 0 0 0 1px rgba(234,240,255,.15);
+    z-index: 10;
   }
-  .card-art{position:absolute; inset:0; background-position:center; background-size:cover; background-repeat:no-repeat;}
-  .card-badge{
-    position:absolute; top:.6rem; right:.6rem; z-index:3;
-    font-family:'JetBrains Mono', monospace; font-size:.65rem; font-weight:700;
-    padding:.28rem .5rem; border-radius:4px; background:rgba(6,11,22,.6);
+  
+  .card-art {position:absolute; inset:0; background-position:center; background-size:cover; background-repeat:no-repeat;}
+  
+  .card-badge {
+    position:absolute; top:clamp(.6rem, 2.5cqw, 1rem); right:clamp(.6rem, 2.5cqw, 1rem); z-index:3;
+    font-weight:700;
+    font-size:.7rem;                          /* fallback */
+    font-size:clamp(.6rem, 2.4cqw, .8rem);    /* ikut ukuran kartu */
+    padding:.35rem .65rem; border-radius:4px; background:rgba(6,11,22,.6);
     border:1px solid rgba(234,240,255,.25); color:var(--signal-bright); backdrop-filter:blur(3px);
   }
-  .card-type{
-    position:absolute; top:.6rem; left:.6rem; z-index:3;
-    font-size:.6rem; font-weight:700; letter-spacing:.06em; text-transform:uppercase;
-    padding:.28rem .5rem; border-radius:4px; background:rgba(6,11,22,.6);
+  
+  .card-type {
+    position:absolute; top:clamp(.6rem, 2.5cqw, 1rem); left:clamp(.6rem, 2.5cqw, 1rem); z-index:3;
+    font-weight:700; letter-spacing:.06em; text-transform:uppercase;
+    font-size:.65rem;                         /* fallback */
+    font-size:clamp(.55rem, 2.2cqw, .75rem);  /* ikut ukuran kartu */
+    padding:.35rem .65rem; border-radius:4px; background:rgba(6,11,22,.6);
     border:1px solid rgba(234,240,255,.2); color:var(--ice); backdrop-filter:blur(3px);
   }
-  .card-overlay{position:absolute; left:0; right:0; bottom:0; z-index:3; padding:.9rem .9rem .8rem; background:linear-gradient(to top, rgba(6,11,22,.95) 15%, transparent 100%);}
-  .card-cat{font-size:.62rem; letter-spacing:.14em; text-transform:uppercase; color:var(--signal-bright); font-weight:700; margin-bottom:.2rem; display:block;}
-  .card-title{font-family:'Bebas Neue', sans-serif; font-size:1.3rem; line-height:1.05; color:var(--ice);}
-  .card-hook{font-size:.74rem; color:var(--mist); margin-top:.35rem; max-height:0; opacity:0; overflow:hidden; transition:max-height .25s ease, opacity .25s ease;}
-  .card:hover .card-hook{max-height:3rem; opacity:1;}
+  
+  .card-overlay {position:absolute; left:0; right:0; bottom:0; z-index:3; padding:clamp(.85rem, 4cqw, 1.5rem); background:linear-gradient(to top, rgba(6,11,22,.95) 15%, transparent 100%);}
+  
+  .card-cat {font-size:.7rem; font-size:clamp(.58rem, 2.4cqw, .8rem); letter-spacing:.14em; text-transform:uppercase; color:var(--signal-bright); font-weight:700; margin-bottom:.3rem; display:block;}
+  
+  /* Judul ikut membesar mengikuti ukuran kartu (unit cqw = % lebar kartu).
+     Catatan: deklarasi sebelumnya "font-size: font-size:1.3rem" tidak valid,
+     jadi judul selama ini jatuh ke ukuran default browser. */
+  .card-title {
+    font-family:'Plus Jakarta Sans', sans-serif;
+    font-weight:700;
+    font-size:1.3rem;                          /* fallback untuk browser lama */
+    font-size:clamp(1.02rem, 5cqw, 1.85rem);   /* ikut ukuran kartu */
+    line-height:1.12; color:var(--ice);}
+  
+  .card-hook {font-size:.85rem; font-size:clamp(.72rem, 3cqw, .95rem); color:var(--mist); margin-top:.5rem; max-height:0; opacity:0; overflow:hidden; transition:max-height .25s ease, opacity .25s ease;}
+  .card:hover .card-hook {max-height:4rem; opacity:1;}
 
   /* ---------------- ABOUT / FOOTER ---------------- */
   #about{max-width:760px; margin:2rem auto 6rem; padding:0 clamp(1.25rem,4vw,3.5rem);}
-  #about h2{font-family:'Bebas Neue',sans-serif; font-size:2.2rem; margin-bottom:1rem;}
+  #about h2{font-family:'Plus Jakarta Sans',sans-serif; font-size:2.2rem; margin-bottom:1rem;}
   #about p{color:var(--mist); line-height:1.75; margin-bottom:1rem;}
   #about .contact-links{display:flex; gap:1.2rem; margin-top:1.2rem; flex-wrap:wrap;}
   #about .contact-links a{font-weight:600; font-size:.9rem; color:var(--signal-bright); border-bottom:1px solid rgba(127,168,255,.35); padding-bottom:.15rem;}
-  footer{border-top:1px solid rgba(234,240,255,.08); padding:2rem clamp(1.25rem,4vw,3.5rem); display:flex; justify-content:space-between; flex-wrap:wrap; gap:1rem; color:var(--mist); font-size:.8rem;}
+  footer{
+    background:#fff;
+    color:var(--deep-sea);
+    padding:2.4rem clamp(1.25rem,4vw,3.5rem);
+    display:flex; justify-content:space-between; flex-wrap:wrap; gap:1rem;
+    font-size:.8rem; font-weight:600;
+  }
 
   /* ---------------- DETAIL OVERLAY ---------------- */
   .detail-overlay{
@@ -169,24 +216,25 @@
     transform:translateY(100%); opacity:0; visibility:hidden; overflow-y:auto;
     transition:transform .4s cubic-bezier(.2,.8,.2,1), opacity .4s ease, visibility 0s linear .4s;
   }
-.detail-overlay.open {
-    transform: none; /* <-- Ini Kunci Utamanya */
-    opacity: 1; 
-    visibility: visible; 
-    transition: transform .4s cubic-bezier(.2,.8,.2,1), opacity .4s ease, visibility 0s;
-  }  .detail-close{
+  .detail-overlay.open{
+    transform:none; 
+    opacity:1; 
+    visibility:visible; 
+    transition:transform .4s cubic-bezier(.2,.8,.2,1), opacity .4s ease, visibility 0s;
+  }
+  .detail-close{
     position:fixed; top:1.4rem; right:clamp(1.25rem,4vw,3.5rem); z-index:210;
     width:42px; height:42px; border-radius:50%; background:rgba(6,11,22,.75);
     border:1px solid rgba(234,240,255,.25); color:var(--ice); font-size:1.3rem; cursor:pointer;
     display:flex; align-items:center; justify-content:center; backdrop-filter:blur(4px);
   }
   .detail-banner{position:relative; height:52vh; min-height:340px; display:flex; align-items:flex-end; padding:0 clamp(1.25rem,4vw,3.5rem) 2.4rem; background-position:center; background-size:cover; background-repeat:no-repeat;}
-  .detail-banner::after{content:"absolute; inset:0; background:linear-gradient(to top, var(--void) 0%, transparent 55%);"}
+  .detail-banner::after{content:""; position:absolute; inset:0; background:linear-gradient(to top, var(--void) 0%, transparent 55%);}
   .detail-banner-content{position:relative; z-index:2;}
   .detail-org{display:flex; align-items:center; gap:.55rem; margin-bottom:.7rem;}
-  .detail-org img{width:28px; height:28px; border-radius:6px; object-fit:cover; background:rgba(255,255,255,.9);}
+  .detail-org img{width:46px; height:46px; border-radius:6px; object-fit:contain; background:transparent;}
   .detail-cat{font-size:.72rem; letter-spacing:.18em; text-transform:uppercase; color:var(--signal-bright); font-weight:700;}
-  .detail-title{font-family:'Bebas Neue', sans-serif; font-size:clamp(2.4rem,5.6vw,4.2rem); line-height:.98; color:var(--ice);}
+  .detail-title{font-family:'Plus Jakarta Sans', sans-serif; font-size:clamp(1.9rem,5.6vw,4.2rem); line-height:1.05; color:var(--ice);}
   .detail-org-name{color:var(--mist); font-size:.9rem; margin-top:.5rem;}
 
   .detail-body{max-width:920px; margin:0 auto; padding:0 clamp(1.25rem,4vw,3.5rem) 6rem;}
@@ -200,11 +248,10 @@
 
   .impact-grid{display:grid; grid-template-columns:repeat(auto-fit,minmax(150px,1fr)); gap:1.2rem;}
   .impact-stat{background:var(--deep-sea); border:1px solid rgba(234,240,255,.08); border-radius:8px; padding:1.2rem 1.1rem;}
-  .impact-value{font-family:'JetBrains Mono',monospace; font-size:1.6rem; font-weight:700; color:var(--signal-bright);}
+  .impact-value{font-family:'Plus Jakarta Sans', sans-serif; font-size:1.6rem; font-weight:800; color:var(--signal-bright);}
   .impact-label{font-size:.78rem; color:var(--mist); margin-top:.3rem;}
 
-  /* --- KODE BARU UNTUK EFEK ZOOM & BLUR BACKGROUND --- */
-  
+  /* --- KODE EFEK ZOOM CENTERED & ANIMASI FLIP --- */
   .gallery-grid {
     display: grid; 
     grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); 
@@ -214,6 +261,7 @@
   .gallery-wrapper {
     aspect-ratio: 4/3;
     position: relative;
+    z-index: 1; 
   }
 
   .gallery-item {
@@ -227,11 +275,11 @@
     background-size: cover; 
     background-repeat: no-repeat;
     text-decoration: none;
-    transition: all 0.3s ease; /* Transisi untuk warna/teks */
+    transition: transform 0.4s cubic-bezier(0.2, 0.8, 0.2, 1), box-shadow 0.4s ease, border-radius 0.4s ease;
+    transform-origin: center center;
     z-index: 1;
   }
 
-  /* Blur & Gelapkan Background saat ada gambar yang di-hover */
   .detail-overlay:has(.gallery-wrapper:hover) .detail-banner,
   .detail-body:has(.gallery-wrapper:hover) > *:not(:has(.gallery-wrapper:hover)),
   .gallery-grid:has(.gallery-wrapper:hover) .gallery-wrapper:not(:hover) {
@@ -240,18 +288,9 @@
     transition: filter 0.4s ease, opacity 0.4s ease;
   }
 
-  /* INI YANG MEMBUATNYA TEPAT DI TENGAH LAYAR */
-  .gallery-wrapper:hover .gallery-item {
-    position: fixed;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%); /* Menarik titik fokus persis ke tengah */
-    width: 85vw;   /* Mengambil 85% lebar layar */
-    height: 75vh;  /* Mengambil 75% tinggi layar */
-    max-width: 1000px;
-    z-index: 9999;
+  .gallery-item.zoomed {
     box-shadow: 0 40px 100px rgba(0,0,0,1);
-    border-radius: 12px;
+    border-radius: 4px; 
   }
 
   .gallery-item span {
@@ -261,13 +300,11 @@
     font-weight: 600; 
     color: var(--ice);
     text-shadow: 0 2px 4px rgba(0,0,0,0.8);
-    transition: font-size 0.3s ease;
+    transition: opacity 0.3s ease;
   }
 
-  /* Teks caption ikut membesar saat gambar ada di tengah */
-  .gallery-wrapper:hover .gallery-item span {
-    font-size: 1.2rem; 
-    padding: 0.5rem;
+  .gallery-item.zoomed span {
+    opacity: 0.9;
   }
 
   .gallery-item::after {
@@ -277,15 +314,38 @@
     background: linear-gradient(to top, rgba(6,11,22,.9) 0%, transparent 40%);
     border-radius: inherit;
   }
-  /* ---------------------------------------------------- */
-  /* Di layar kecil/HP, ukuran zoomnya dikurangi agar gambar tidak terpotong (keluar layar) */
-  @media (max-width: 640px) {
-    .gallery-item:hover {
-      transform: scale(1.35);
-      z-index: 999;
-    }
+
+  /* --- CERTIFICATE HERO (di bawah Gallery) --- */
+  .cert-hero{
+    position:relative; border-radius:10px; overflow:hidden;
+    background:
+      radial-gradient(120% 90% at 15% 0%, rgba(62,124,255,.22), transparent 60%),
+      linear-gradient(160deg, var(--ink) 0%, var(--deep-sea) 55%, var(--void) 100%);
+    border:1px solid rgba(234,240,255,.1);
+    padding:clamp(1.2rem, 4vw, 2.6rem);
+    display:flex; flex-direction:column; align-items:center; gap:1.2rem;
   }
-  /* ---------------------------------------------------- */
+  .cert-hero img{
+    width:100%; max-width:720px; border-radius:6px; display:block;
+    box-shadow:0 24px 60px -18px rgba(0,0,0,.7);
+  }
+  .cert-caption{text-align:center;}
+  .cert-caption .cert-title{font-weight:700; font-size:1.05rem; color:var(--ice);}
+  .cert-caption p{color:var(--mist); font-size:.9rem; margin-top:.35rem; max-width:60ch;}
+
+  @media (max-width: 640px) {
+    .nav-links{display:none;}
+    .meta-row{gap:1.4rem;}
+    .detail-banner{height:42vh; min-height:260px; padding-bottom:1.6rem;}
+    .detail-section{margin-bottom:2.2rem;}
+    .detail-body{padding-bottom:4rem;}
+    .impact-grid{grid-template-columns:repeat(auto-fit,minmax(125px,1fr)); gap:.9rem;}
+    .filter-bar{gap:.5rem;}
+    .filter-pill{padding:.55rem 1.15rem; font-size:.82rem;}
+  }
+  @media (prefers-reduced-motion:reduce){
+    *{transition:none !important; scroll-behavior:auto !important;}
+  }
 </style>
 </head>
 <body>
@@ -316,6 +376,7 @@
     <button class="filter-pill active" data-filter="all" onclick="setFilter('all')">All Work</button>
     <button class="filter-pill" data-filter="Company" onclick="setFilter('Company')">Company</button>
     <button class="filter-pill" data-filter="Student Organization" onclick="setFilter('Student Organization')">Student Organization</button>
+    <button class="filter-pill" data-filter="Competition" onclick="setFilter('Competition')">Competition</button>
   </div>
 
   <main id="workRows"></main>
@@ -340,7 +401,6 @@
   <div class="detail-overlay" id="detailOverlay"></div>
 
 <script>
-
 const IMG = {
   // Hero Image
   hero_profile: "./hero_profile.jpeg", 
@@ -352,6 +412,7 @@ const IMG = {
   garuda_tiktok: "./garuda_tiktok.png",
   garuda_destination: "./garuda_destination.png",
   garuda_deck: "./garuda_deck.png",
+  garuda_certificate: "./garuda_certificate.png", 
   garuda_singapore: "./garuda_singapore.png",
 
   // 2. HIMA
@@ -398,8 +459,9 @@ const IMG = {
   worldinvent_cert: "https://images.unsplash.com/photo-1589330694653-afaede912c74?w=800&q=80",
   worldinvent_medal: "https://images.unsplash.com/photo-1618889482923-38250401a84e?w=800&q=80"
 };
+
 document.documentElement.style.setProperty('--hero-photo-url', `url(${IMG.hero_profile})`);
-// -----------------------------------
+
 /* =========================================================
    PROJECT DATA 
    ========================================================= */
@@ -409,6 +471,7 @@ const PROJECTS = [
     logo:"logo_garuda", orgName:"PT Garuda Indonesia (Persero) Tbk",
     title:"Media Marketing Communication Intern",
     badge:"23 LPs",
+    teamSize:"7",
     role:"Media Marketing Communication Intern",
     overview:"Interned on the Media & Marketing Communication team at PT Garuda Indonesia (Persero) Tbk, producing content and campaign material across landing pages, social video, storyboards, destination copywriting, and strategy decks to support brand awareness and sales.",
     myRole:"Produced digital content end-to-end for the marketing team: building landing pages for promos, directing short-form TikTok content, writing destination guides, developing tourism storyboards, and putting together data-backed strategy decks.",
@@ -419,14 +482,17 @@ const PROJECTS = [
       {value:"2", label:"Tourism storyboards"},
       {value:"3+", label:"Strategy decks"}
     ],
-    //
     videoHighlight: {
       title: "Visit Singapore Campaign",
       desc: "A special project video highlighting Singapore tourism, Copywrite by me and script to end during my time at Garuda Indonesia.",
-      url: "https://www.instagram.com/reel/DUVWO_BCTey/", // Ganti dengan link IG Anda
+      url: "https://www.instagram.com/reel/DUVWO_BCTey/",
       cover: "garuda_singapore"
     },
-    //
+    certificate:{
+      img:"garuda_certificate",
+      title:"Internship Certificate — PT Garuda Indonesia (Persero) Tbk",
+      desc:"Certificate of completion, Media Marketing Communication internship."
+    },
     banner:"garuda_banner",
     gallery:[
       {img:"garuda_landing_page", caption:"Landing page — Fun Monday with GIUC"},
@@ -440,6 +506,7 @@ const PROJECTS = [
     logo:"logo_hima", orgName:"HIMA Manajemen Komunikasi — Sosial & Lingkungan",
     title:"Camping Class — PIC",
     badge:"2 NGO partners",
+    teamSize:"10",
     role:"PIC, Camping Class (Sosial & Lingkungan Division)",
     overview:"As PIC for Camping Class within HIMA Manajemen Komunikasi's Sosial & Lingkungan division, curated an outdoor learning event in partnership with two NGOs — Sisa Pilah and Waktu Loang — teaching participants paper recycling through hands-on experience.",
     myRole:"Designed and led the Camping Class program end-to-end: partnering with two NGOs, building a hands-on recycling activity, presenting to participants on-site, and editing the event's aftermovie recap in CapCut.",
@@ -454,6 +521,7 @@ const PROJECTS = [
     logo:"logo_bem", orgName:"BEM Fakultas Ilmu Komunikasi UNPAD",
     title:"Staff, Creative Economy",
     badge:"3 initiatives",
+    teamSize:"19",
     role:"Staff, Creative Economy Division",
     overview:"As Creative Economy staff for BEM Fakultas Ilmu Komunikasi UNPAD, worked across three initiatives: leading the BEM uniform (Seragam) project, coordinating the SOLA Market project-officer search and event alignment, and managing external media partnerships for the Youthpreneur event.",
     myRole:"Led the Seragam BEM project from needs-gathering through vendor sourcing and final brief. For SOLA Market, ran the open project-officer search and kept the event on-brief. For Youthpreneur, sourced and managed media partnerships — including coordinating with Sandiaga Uno's team to secure him as an event speaker.",
@@ -486,6 +554,7 @@ const PROJECTS = [
     logo:"logo_hometheatre", orgName:"Home Theatre",
     title:"Head of Music Production",
     badge:"200+ attendees",
+    teamSize:"5",
     role:"Head of Music Production",
     overview:"Led music production for Home Theatre's stage production, translating the script into original songs and overseeing development through live performance in front of 200+ attendees.",
     myRole:"Analyzed the script to identify where songs were needed, set the creative direction for each track, and led curation and production with the music team — from studio sessions through the live show.",
@@ -497,9 +566,11 @@ const PROJECTS = [
     ]
   },
   {
-    id:6, category:"Competition", workType:"Student Organization",
-    logo:"logo_ideation", orgName:"Ideation — Epicentrum UNPAD 2024",
-    title:"3rd Place — Team Firstwell",
+    id:6, category:"Competition", workType:"Competition",
+    logo:"logo_ideation", orgName:"Epicentrum Universitas Padjadjaran 2024",
+    title:"3rd Place — Ideation",
+    hook:"Team Firstwell — Epicentrum UNPAD 2024",
+    teamSize:"3",
     badge:"3rd Place",
     role:"Team Firstwell — Communication Strategy & Branding",
     overview:"Competed in the Ideation Campaign Competition at Epicentrum Universitas Padjadjaran 2024 (theme: Digital Transformation in ASEAN Education) with team Firstwell, tackling the education gap in underserved ASEAN coastal communities. Placed 3rd.",
@@ -512,9 +583,11 @@ const PROJECTS = [
     ]
   },
   {
-    id:7, category:"Competition", workType:"Student Organization",
+    id:7, category:"Competition", workType:"Competition",
     logo:"logo_awf", orgName:"Advertising Week Festival 2024",
-    title:"2nd Place — Team The Emperors",
+    title:"2nd Place — Brand Innovation",
+    hook:"Team The Emperors — Advertising Week Festival 2024",
+    teamSize:"3",
     badge:"2nd Place",
     role:"Team The Emperors — Brand Research & Strategy",
     overview:"Competed in the Brand Innovation competition at Advertising Week Festival 2024 with team The Emperors, developing a brand-innovation strategy for skincare brand Nina Nugroho grounded in original market research. Placed 2nd.",
@@ -527,9 +600,11 @@ const PROJECTS = [
     ]
   },
   {
-    id:8, category:"Competition", workType:"Student Organization",
-    logo:"logo_worldinvent", orgName:"World Invent Singapore 2024",
-    title:"Special Award of Merit",
+    id:8, category:"Competition", workType:"Competition",
+    logo:"logo_worldinvent", orgName:"Universitas Padjadjaran",
+    title:"Student Excellence (Mahasiswa Berprestasi) — Universitas Padjadjaran",
+    hook:"Special Award of Merit — World Invent Singapore 2024",
+    teamSize:"8",
     badge:"Special Award",
     role:"Lead Representative",
     overview:"Represented Universitas Padjadjaran as Mahasiswa Berprestasi at World Invent Singapore 2024, presenting an innovation to an international jury and receiving the Special Award of Merit from the Philippines' Department of Science and Technology.",
@@ -577,7 +652,7 @@ function renderRows(){
           <div class="card-overlay">
             <span class="card-cat">${p.category}</span>
             <div class="card-title">${p.title}</div>
-            <div class="card-hook">${p.orgName}</div>
+            <div class="card-hook">${p.hook || p.orgName}</div>
           </div>
         </div>`).join("");
     return `
@@ -619,7 +694,6 @@ function openDetail(id){
         </div>
       </div>` : "";
 
-  // --- KODE BARU UNTUK SPECIAL VIDEO ---
   const videoBlock = p.videoHighlight ? `
       <div class="detail-section">
         <h3>Special Project: ${p.videoHighlight.title}</h3>
@@ -631,7 +705,19 @@ function openDetail(id){
           <div style="width:min(100%, 300px); aspect-ratio:16/9; background-image:url(${IMG[p.videoHighlight.cover]}); background-size:cover; background-position:center; border-radius:6px; border:1px solid rgba(255,255,255,.1);"></div>
         </div>
       </div>` : "";
-  // -------------------------------------
+
+  // Blok sertifikat gaya "hero" — muncul di bawah Gallery jika project punya p.certificate
+  const certBlock = p.certificate ? `
+      <div class="detail-section">
+        <h3>Certificate</h3>
+        <div class="cert-hero grain">
+          <img src="${IMG[p.certificate.img]}" alt="${p.certificate.title}" loading="lazy">
+          <div class="cert-caption">
+            <div class="cert-title">${p.certificate.title}</div>
+            ${p.certificate.desc ? `<p>${p.certificate.desc}</p>` : ""}
+          </div>
+        </div>
+      </div>` : "";
 
   overlay.innerHTML = `
     <div class="detail-banner grain" style="background-image:${bg(p.banner, p.category)}">
@@ -659,7 +745,7 @@ function openDetail(id){
 
       ${impactBlock}
       
-      ${videoBlock} <!-- Ini akan memunculkan blok video di atas Gallery -->
+      ${videoBlock}
 
       <div class="detail-section">
         <h3>Gallery</h3>
@@ -674,6 +760,8 @@ function openDetail(id){
             </div>`).join("")}
         </div>
       </div>
+
+      ${certBlock}
     </div>
   `;
 
@@ -681,6 +769,47 @@ function openDetail(id){
   document.getElementById("closeBtn").style.display = "flex";
   document.body.style.overflow = "hidden";
   overlay.scrollTop = 0;
+
+  // ANIMASI ZOOM FLIP MELAYANG KE TENGAH
+  // Hanya untuk perangkat dengan mouse asli — di layar sentuh, "tap"
+  // memicu mouseenter tapi mouseleave tidak pernah datang, jadi zoom
+  // dan blur akan tersangkut terbuka.
+  const canHover = window.matchMedia("(hover: hover) and (pointer: fine)").matches;
+  const wrappers = overlay.querySelectorAll('.gallery-wrapper');
+  if (canHover) wrappers.forEach(wrap => {
+    const item = wrap.querySelector('.gallery-item');
+    
+    wrap.addEventListener('mouseenter', () => {
+      const centerX = window.innerWidth / 2;
+      const centerY = window.innerHeight / 2;
+      
+      const rect = wrap.getBoundingClientRect();
+      
+      const targetWidth = window.innerWidth * 0.85;
+      const targetHeight = window.innerHeight * 0.75;
+      const targetMaxWidth = 1000; 
+      
+      const scaleX = Math.min(targetWidth, targetMaxWidth) / rect.width;
+      const scaleY = targetHeight / rect.height;
+      const scale = Math.min(scaleX, scaleY); 
+      
+      const moveX = centerX - (rect.left + rect.width / 2);
+      const moveY = centerY - (rect.top + rect.height / 2);
+      
+      wrap.style.zIndex = "9999";
+      item.style.transform = `translate(${moveX}px, ${moveY}px) scale(${scale})`;
+      item.classList.add('zoomed');
+    });
+    
+    wrap.addEventListener('mouseleave', () => {
+      item.style.transform = "translate(0, 0) scale(1)";
+      item.classList.remove('zoomed');
+      
+      setTimeout(() => { 
+        if(!item.classList.contains('zoomed')) wrap.style.zIndex = "1"; 
+      }, 400); 
+    });
+  });
 }
 
 function closeDetail(){
@@ -700,5 +829,3 @@ renderRows();
 </script>
 </body>
 </html>
-
-```
