@@ -9,15 +9,51 @@
 <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:ital,wght@0,300..800;1,300..800&display=swap" rel="stylesheet">
 <style>
   :root{
-    --void:#060b16;
-    --deep-sea:#0d1b33;
-    --ink:#14294d;
-    --ink-soft:#1b2f57;
-    --signal:#3e7cff;
-    --signal-bright:#7fa8ff;
-    --ice:#eaf0ff;
-    --mist:#7c8ba8;
+    
+    --void:#f7f9ff;        
+    --deep-sea:#e8eefb;    
+    --ink:#dbe6f9;
+    --ink-soft:#cfdcf5;
+    --signal:#3e7cff;      
+    --signal-bright:#2456c9; 
+    --ice:#0d1b33;         
+    --mist:#5b6c8f;        
     --grain-opacity:.05;
+  }
+
+  #scrollToTopBtn {
+    position: fixed;
+    bottom: 2.5rem;
+    right: clamp(1.25rem, 4vw, 3.5rem); 
+    z-index: 95;
+    width: 46px;
+    height: 46px;
+    border-radius: 50%;
+    background: var(--signal);
+    color: #fff;
+    border: none;
+    font-size: 1.4rem;
+    font-weight: bold;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 10px 25px -5px rgba(62,124,255,0.4);
+    opacity: 0;
+    visibility: hidden;
+    transform: translateY(20px);
+    transition: opacity 0.3s ease, transform 0.3s cubic-bezier(.2,.8,.2,1), visibility 0.3s ease, background 0.2s ease;
+  }
+  
+  #scrollToTopBtn.show {
+    opacity: 1;
+    visibility: visible;
+    transform: translateY(0);
+  }
+  
+  #scrollToTopBtn:hover {
+    background: var(--signal-bright);
+    transform: translateY(-4px) scale(1.05); 
   }
 
   *{box-sizing:border-box; margin:0; padding:0;}
@@ -27,8 +63,8 @@
     color:var(--ice);
     font-family:'Plus Jakarta Sans', sans-serif;
     -webkit-font-smoothing:antialiased;
-    overflow-x:hidden;   /* fallback untuk browser lama */
-    overflow-x:clip;     /* 'hidden' bisa mematikan position:sticky; 'clip' aman */
+    overflow-x:hidden;   
+    overflow-x:clip;     
   }
   a{color:inherit; text-decoration:none;}
   ::selection{background:var(--signal); color:var(--void);}
@@ -49,19 +85,19 @@
   .display{font-family:'Plus Jakarta Sans', sans-serif; letter-spacing:.02em; line-height:.92; font-weight:400;}
   .mono{font-family:'Plus Jakarta Sans', sans-serif;}
 
-  /* ---------------- NAV ---------------- */
+  
   #nav{
     position:fixed; top:0; left:0; right:0; z-index:100;
     display:flex; align-items:center; justify-content:space-between;
     padding:1.6rem clamp(1.25rem, 4vw, 3.5rem);
-    background:linear-gradient(to bottom, rgba(6,11,22,.85), transparent);
+    background:linear-gradient(to bottom, rgba(247,249,255,.9), transparent);
     transition:background .35s ease, padding .35s ease, box-shadow .35s ease;
   }
   #nav.scrolled{
-    background:rgba(6,11,22,.92);
+    background:rgba(247,249,255,.94);
     backdrop-filter:blur(10px);
     padding:1.05rem clamp(1.25rem, 4vw, 3.5rem);
-    box-shadow:0 1px 0 rgba(255,255,255,.06);
+    box-shadow:0 1px 0 rgba(13,27,51,.1);
   }
   .logo{font-family:'Plus Jakarta Sans', sans-serif; font-size:1.5rem; letter-spacing:.06em; color:var(--ice);}
   .logo span{color:var(--signal-bright);}
@@ -69,7 +105,7 @@
   .nav-links a{font-size:.82rem; font-weight:600; letter-spacing:.04em; text-transform:uppercase; color:var(--mist); transition:color .2s ease;}
   .nav-links a:hover{color:var(--ice);}
 
-  /* ---------------- HERO ---------------- */
+  
   .hero{
     position:relative; min-height:92vh; display:flex; align-items:flex-end; overflow:hidden;
     padding:clamp(6rem,10vw,9rem) clamp(1.25rem,4vw,3.5rem) clamp(3.5rem,7vw,5rem);
@@ -83,8 +119,7 @@
     background-position:center center; background-size:cover; background-repeat:no-repeat;
     -webkit-mask-image:radial-gradient(circle at center, #000 30%, rgba(0,0,0,0.3) 80%, transparent 100%);
             mask-image:radial-gradient(circle at center, #000 30%, rgba(0,0,0,0.3) 80%, transparent 100%);
-    mix-blend-mode:luminosity;
-    opacity:.6;
+    opacity:.9;
   }
   .hero::after{
     content:""; position:absolute; inset:0;
@@ -99,29 +134,28 @@
   .btn{display:inline-flex; align-items:center; gap:.55rem; padding:.85rem 1.6rem; border-radius:5px; font-weight:700; font-size:.92rem; cursor:pointer; border:none; transition:transform .18s ease, background .18s ease, border-color .18s ease;}
   .btn:hover{transform:translateY(-1px);}
   .btn-primary{background:var(--ice); color:var(--void);}
-  .btn-primary:hover{background:#fff;}
-  .btn-secondary{background:rgba(234,240,255,.08); border:1px solid rgba(234,240,255,.22); color:var(--ice);}
-  .btn-secondary:hover{background:rgba(234,240,255,.14);}
+  .btn-primary:hover{filter:brightness(1.15);}
+  .btn-secondary{background:rgba(13,27,51,.06); border:1px solid rgba(13,27,51,.3); color:var(--ice);}
+  .btn-secondary:hover{background:rgba(13,27,51,.12);}
 
-  /* ---------------- FILTER BAR ---------------- */
+  
   .filter-bar{
     display:flex; gap:.7rem; flex-wrap:wrap;
-    /* Menempel di bawah nav saat halaman di-scroll.
-       "top" = perkiraan tinggi nav dalam keadaan scrolled (~62px). */
+   
     position:sticky; top:56px; z-index:90;
     padding:.9rem clamp(1.25rem,4vw,3.5rem); margin-bottom:1.4rem;
-    background:rgba(6,11,22,.92);
+    background:rgba(247,249,255,.92);
     backdrop-filter:blur(10px);
     -webkit-backdrop-filter:blur(10px);
-    /* Supaya klik "Work" di nav tidak menyembunyikan bar di balik nav */
+   
     scroll-margin-top:70px;
   }
   .filter-pill{
     padding:.7rem 1.5rem; border-radius:999px; font-size:.92rem; font-weight:700;
-    background:transparent; border:1px solid rgba(234,240,255,.22); color:var(--mist);
+    background:transparent; border:1px solid rgba(13,27,51,.28); color:var(--mist);
     cursor:pointer; transition:all .2s ease;
   }
-  .filter-pill:hover{color:var(--ice); border-color:rgba(234,240,255,.4);}
+  .filter-pill:hover{color:var(--ice); border-color:rgba(13,27,51,.55);}
   .filter-pill.active{background:var(--signal); border-color:var(--signal); color:#fff;}
 
   /* ---------------- ROWS / CARDS ---------------- */
@@ -137,12 +171,9 @@
 
   .card {
     flex: 0 0 auto; 
-    /* Desktop: tetap 30vw (ukuran yang sekarang, tidak berubah).
-       HP: tidak boleh lebih kecil dari 280px (atau 85vw di layar sangat sempit).
-       Monitor sangat besar: berhenti membesar di 620px. */
+    
     width: clamp(min(280px, 85vw), 30vw, 620px);
-    /* Menjadikan kartu sebagai "container" supaya font di dalamnya
-       bisa ikut ukuran kartu (unit cqw di bawah) */
+    
     container-type: inline-size;
     
     aspect-ratio: 16/9; 
@@ -154,7 +185,7 @@
   }
   
   .card:hover, .card:focus-visible {
-    transform: scale(1.04) translateY(-6px); /* Sedikit dikurangi scale-nya agar saat besar tidak terlalu agresif */
+    transform: scale(1.04) translateY(-6px); 
     box-shadow: 0 24px 45px -12px rgba(0,0,0,.6), 0 0 0 1px rgba(234,240,255,.15);
     z-index: 10;
   }
@@ -164,55 +195,128 @@
   .card-badge {
     position:absolute; top:clamp(.6rem, 2.5cqw, 1rem); right:clamp(.6rem, 2.5cqw, 1rem); z-index:3;
     font-weight:700;
-    font-size:.7rem;                          /* fallback */
-    font-size:clamp(.6rem, 2.4cqw, .8rem);    /* ikut ukuran kartu */
+    font-size:.7rem;                          
+    font-size:clamp(.6rem, 2.4cqw, .8rem);    
     padding:.35rem .65rem; border-radius:4px; background:rgba(6,11,22,.6);
-    border:1px solid rgba(234,240,255,.25); color:var(--signal-bright); backdrop-filter:blur(3px);
+    border:1px solid rgba(234,240,255,.25); color:#7fa8ff; backdrop-filter:blur(3px);
   }
   
   .card-type {
     position:absolute; top:clamp(.6rem, 2.5cqw, 1rem); left:clamp(.6rem, 2.5cqw, 1rem); z-index:3;
     font-weight:700; letter-spacing:.06em; text-transform:uppercase;
-    font-size:.65rem;                         /* fallback */
-    font-size:clamp(.55rem, 2.2cqw, .75rem);  /* ikut ukuran kartu */
+    font-size:.65rem;                         
+    font-size:clamp(.55rem, 2.2cqw, .75rem);  
     padding:.35rem .65rem; border-radius:4px; background:rgba(6,11,22,.6);
-    border:1px solid rgba(234,240,255,.2); color:var(--ice); backdrop-filter:blur(3px);
+    border:1px solid rgba(234,240,255,.2); color:#fff; backdrop-filter:blur(3px);
   }
   
   .card-overlay {position:absolute; left:0; right:0; bottom:0; z-index:3; padding:clamp(.85rem, 4cqw, 1.5rem); background:linear-gradient(to top, rgba(6,11,22,.95) 15%, transparent 100%);}
   
-  .card-cat {font-size:.7rem; font-size:clamp(.58rem, 2.4cqw, .8rem); letter-spacing:.14em; text-transform:uppercase; color:var(--signal-bright); font-weight:700; margin-bottom:.3rem; display:block;}
+  .card-cat {font-size:.7rem; font-size:clamp(.58rem, 2.4cqw, .8rem); letter-spacing:.14em; text-transform:uppercase; color:#7fa8ff; font-weight:700; margin-bottom:.3rem; display:block;}
   
-  /* Judul ikut membesar mengikuti ukuran kartu (unit cqw = % lebar kartu).
-     Catatan: deklarasi sebelumnya "font-size: font-size:1.3rem" tidak valid,
-     jadi judul selama ini jatuh ke ukuran default browser. */
+  
   .card-title {
     font-family:'Plus Jakarta Sans', sans-serif;
     font-weight:700;
-    font-size:1.3rem;                          /* fallback untuk browser lama */
-    font-size:clamp(1.02rem, 5cqw, 1.85rem);   /* ikut ukuran kartu */
-    line-height:1.12; color:var(--ice);}
+    font-size:1.3rem;                          
+    font-size:clamp(1.02rem, 5cqw, 1.85rem);   
+    line-height:1.12; color:#fff;}
   
-  .card-hook {font-size:.85rem; font-size:clamp(.72rem, 3cqw, .95rem); color:var(--mist); margin-top:.5rem; max-height:0; opacity:0; overflow:hidden; transition:max-height .25s ease, opacity .25s ease;}
+  .card-hook {font-size:.85rem; font-size:clamp(.72rem, 3cqw, .95rem); color:rgba(255,255,255,.78); margin-top:.5rem; max-height:0; opacity:0; overflow:hidden; transition:max-height .25s ease, opacity .25s ease;}
   .card:hover .card-hook {max-height:4rem; opacity:1;}
 
-  /* ---------------- ABOUT / FOOTER ---------------- */
-  #about{max-width:760px; margin:2rem auto 6rem; padding:0 clamp(1.25rem,4vw,3.5rem);}
+  
+  #about{max-width:1200px; margin:2rem auto 6rem; padding:0 clamp(1.25rem,4vw,3.5rem);}
+  
+  .about-grid{display:grid; grid-template-columns:minmax(280px,550px) 1fr; gap:clamp(2rem,5vw,4.5rem); align-items:stretch;}
+  .about-left{display:flex; flex-direction:column;}
+  .about-portrait{
+    
+    margin-top:auto; padding-top:1.8rem;
+    width:100%; max-width:100%; display:block;
+    border-radius:12px;
+  }
+  .about-grid .journey-block{margin-top:0;}
+  @media (max-width:900px){
+    .about-grid{grid-template-columns:1fr;}
+    .about-grid .journey-block{margin-top:3rem;}
+  }
   #about h2{font-family:'Plus Jakarta Sans',sans-serif; font-size:2.2rem; margin-bottom:1rem;}
   #about p{color:var(--mist); line-height:1.75; margin-bottom:1rem;}
   #about .contact-links{display:flex; gap:1.2rem; margin-top:1.2rem; flex-wrap:wrap;}
   #about .contact-links a{font-weight:600; font-size:.9rem; color:var(--signal-bright); border-bottom:1px solid rgba(127,168,255,.35); padding-bottom:.15rem;}
+
+  
+  .journey-block{margin-top:3.5rem;}
+  .journey-block h2{font-family:'Plus Jakarta Sans',sans-serif; font-size:2.2rem; margin-bottom:1.8rem;}
+  .journey{position:relative; padding:.5rem 0;}
+  .journey-path{position:absolute; inset:0; width:100%; height:100%; pointer-events:none;}
+  .journey-path path{stroke:rgba(62,124,255,.5); stroke-width:4; stroke-linecap:round; stroke-dasharray:.1 13; fill:none;}
+  .journey-item{
+    position:relative; min-height:160px;
+    opacity:0; transform:translateY(26px);
+    transition:opacity .6s ease, transform .6s cubic-bezier(.2,.8,.2,1);
+  }
+  .journey-item.in-view{opacity:1; transform:none;}
+  .journey-dot{
+    position:absolute; left:var(--jx); top:50%; transform:translate(-50%,-50%);
+    width:18px; height:18px; border-radius:50%;
+    background:var(--signal); border:3px solid var(--ice);
+    box-shadow:0 0 0 6px rgba(62,124,255,.22); z-index:2;
+  }
+  .journey-text{
+    position:absolute; top:50%; transform:translateY(-50%);
+    left:calc(var(--jx) + 30px); max-width:min(340px, calc(100% - var(--jx) - 44px));
+    z-index:2;
+  }
+  .journey-item.flip .journey-text{
+    left:auto; right:calc(100% - var(--jx) + 30px);
+    max-width:min(340px, calc(var(--jx) - 44px));
+    text-align:right;
+  }
+  .journey-year{color:var(--signal-bright); font-weight:800; font-size:.8rem; letter-spacing:.1em; text-transform:uppercase;}
+  .journey-title{font-weight:700; font-size:1.05rem; margin:.2rem 0 .3rem;}
+  .journey-desc{color:var(--mist); font-size:.88rem; line-height:1.65;}
+  .journey-item{cursor:default;}
+
+  
+  .journey-popup{
+    position:fixed; z-index:300; width:min(470px, 46vw);
+    background:var(--deep-sea); border:1px solid rgba(13,27,51,.15);
+    border-radius:10px; padding:1.1rem 1.2rem;
+    box-shadow:0 24px 50px -14px rgba(0,0,0,.65);
+    opacity:0; pointer-events:none; visibility:hidden;
+    transform:translateY(8px);
+    transition:opacity .2s ease, transform .2s ease;
+  }
+  .journey-popup.show{opacity:1; visibility:visible; transform:none;}
+  .jp-year{color:var(--signal-bright); font-weight:800; font-size:.72rem; letter-spacing:.1em; text-transform:uppercase;}
+  .jp-title{font-weight:700; font-size:1rem; margin:.2rem 0 .35rem;}
+  .jp-summary{color:var(--mist); font-size:.85rem; line-height:1.6;}
+  .jp-images{display:flex; gap:.55rem; margin-top:.9rem;}
+  .jp-images div{flex:1; aspect-ratio:3/4; border-radius:6px; background-size:cover; background-position:center;}
+  @media (max-width:640px){
+    
+    .journey-item{min-height:130px;}
+    .journey-dot{left:16px;}
+    .journey-text, .journey-item.flip .journey-text{
+      left:46px; right:auto; text-align:left;
+      max-width:calc(100% - 60px);
+    }
+  }
   footer{
     background:#fff;
-    color:var(--deep-sea);
+    border-top:1px solid rgba(13,27,51,.08);
+    color:#0d1b33;
     padding:2.4rem clamp(1.25rem,4vw,3.5rem);
     display:flex; justify-content:space-between; flex-wrap:wrap; gap:1rem;
     font-size:.8rem; font-weight:600;
   }
 
-  /* ---------------- DETAIL OVERLAY ---------------- */
+  
   .detail-overlay{
     position:fixed; inset:0; z-index:200; background:var(--void);
+    color:var(--ice); /* teks selalu mengikuti tema halaman detail */
     transform:translateY(100%); opacity:0; visibility:hidden; overflow-y:auto;
     transition:transform .4s cubic-bezier(.2,.8,.2,1), opacity .4s ease, visibility 0s linear .4s;
   }
@@ -225,7 +329,7 @@
   .detail-close{
     position:fixed; top:1.4rem; right:clamp(1.25rem,4vw,3.5rem); z-index:210;
     width:42px; height:42px; border-radius:50%; background:rgba(6,11,22,.75);
-    border:1px solid rgba(234,240,255,.25); color:var(--ice); font-size:1.3rem; cursor:pointer;
+    border:1px solid rgba(234,240,255,.25); color:#fff; font-size:1.3rem; cursor:pointer;
     display:flex; align-items:center; justify-content:center; backdrop-filter:blur(4px);
   }
   .detail-banner{position:relative; height:52vh; min-height:340px; display:flex; align-items:flex-end; padding:0 clamp(1.25rem,4vw,3.5rem) 2.4rem; background-position:center; background-size:cover; background-repeat:no-repeat;}
@@ -237,7 +341,8 @@
   .detail-title{font-family:'Plus Jakarta Sans', sans-serif; font-size:clamp(1.9rem,5.6vw,4.2rem); line-height:1.05; color:var(--ice);}
   .detail-org-name{color:var(--mist); font-size:.9rem; margin-top:.5rem;}
 
-  .detail-body{max-width:920px; margin:0 auto; padding:0 clamp(1.25rem,4vw,3.5rem) 6rem;}
+  .detail-body{position:relative;}
+  .detail-inner{max-width:920px; margin:0 auto; padding:0 clamp(1.25rem,4vw,3.5rem) 6rem;}
   .meta-row{display:flex; flex-wrap:wrap; gap:2.2rem; padding:1.6rem 0 2.2rem; border-bottom:1px solid rgba(234,240,255,.08); margin-bottom:2.4rem;}
   .meta-item .meta-label{font-size:.68rem; letter-spacing:.1em; text-transform:uppercase; color:var(--mist); margin-bottom:.3rem;}
   .meta-item .meta-value{font-weight:700; font-size:.98rem;}
@@ -251,7 +356,6 @@
   .impact-value{font-family:'Plus Jakarta Sans', sans-serif; font-size:1.6rem; font-weight:800; color:var(--signal-bright);}
   .impact-label{font-size:.78rem; color:var(--mist); margin-top:.3rem;}
 
-  /* --- KODE EFEK ZOOM CENTERED & ANIMASI FLIP --- */
   .gallery-grid {
     display: grid; 
     grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); 
@@ -281,7 +385,7 @@
   }
 
   .detail-overlay:has(.gallery-wrapper:hover) .detail-banner,
-  .detail-body:has(.gallery-wrapper:hover) > *:not(:has(.gallery-wrapper:hover)),
+  .detail-inner:has(.gallery-wrapper:hover) > *:not(:has(.gallery-wrapper:hover)),
   .gallery-grid:has(.gallery-wrapper:hover) .gallery-wrapper:not(:hover) {
     filter: blur(10px); 
     opacity: 0.15;      
@@ -298,7 +402,7 @@
     z-index: 2; 
     font-size: .8rem; 
     font-weight: 600; 
-    color: var(--ice);
+    color: #fff;
     text-shadow: 0 2px 4px rgba(0,0,0,0.8);
     transition: opacity 0.3s ease;
   }
@@ -315,7 +419,28 @@
     border-radius: inherit;
   }
 
-  /* --- CERTIFICATE HERO (di bawah Gallery) --- */
+  .mostviewed-wrap{
+    background:var(--deep-sea);
+    border:1px solid rgba(234,240,255,.08);
+    border-radius:8px; overflow:hidden;
+    display:flex; flex-wrap:wrap; align-items:stretch; gap:0;
+  }
+  .mostviewed-caption{
+    flex:1 1 190px; max-width:230px;
+    padding:1.4rem 1.2rem;
+    display:flex; align-items:center; justify-content:center; text-align:center;
+    font-weight:700; font-size:1rem; line-height:1.55;
+  }
+  .mostviewed-media{flex:1 1 300px; min-width:min(100%, 260px);}
+  .mostviewed-media img{width:100%; height:auto; display:block;}
+  .mostviewed-banner{
+    flex-basis:100%; width:100%;
+    padding:1rem 1.2rem; text-align:center; font-weight:700; letter-spacing:.02em;
+  }
+  @media (max-width:640px){
+    .mostviewed-caption{max-width:100%; flex-basis:100%; padding:1.1rem;}
+  }
+
   .cert-hero{
     position:relative; border-radius:10px; overflow:hidden;
     background:
@@ -338,7 +463,7 @@
     .meta-row{gap:1.4rem;}
     .detail-banner{height:42vh; min-height:260px; padding-bottom:1.6rem;}
     .detail-section{margin-bottom:2.2rem;}
-    .detail-body{padding-bottom:4rem;}
+    .detail-inner{padding-bottom:4rem;}
     .impact-grid{grid-template-columns:repeat(auto-fit,minmax(125px,1fr)); gap:.9rem;}
     .filter-bar{gap:.5rem;}
     .filter-pill{padding:.55rem 1.15rem; font-size:.82rem;}
@@ -382,13 +507,25 @@
   <main id="workRows"></main>
 
   <section id="about">
-    <h2 class="display">About</h2>
-    <p>Hello, it's me, Ardian! I'm a dynamic and ambitious individual with a boundless passion for crafting impactful brand narratives and cooking up innovative strategies. Eager to bring creativity and dedication to every project, I'm always on the hunt for new ways to excel in brand building and have some fun along the way!</p>
-    <p>Faculty of Communication Science, Universitas Padjadjaran.</p>
-    <div class="contact-links">
-      <a href="https://mail.google.com/mail/?view=cm&fs=1&to=ardianbagusan@gmail.com" target="_blank" rel="noopener noreferrer">Contact Me</a>
-      <a href="https://www.linkedin.com/in/ardianbs/" target="_blank" rel="noopener noreferrer">LinkedIn</a>
-      <a href="https://drive.google.com/file/d/1dYN28zlrCpk17xDq918lLTLwtViSAYQi/view?usp=sharing" target="_blank" rel="noopener noreferrer">Resume</a>
+    <div class="about-grid">
+      <div class="about-left">
+        <h2 class="display">About</h2>
+        <p>Hello, it's me, Ardian! I'm a dynamic and ambitious individual with a boundless passion for crafting impactful brand narratives and cooking up innovative strategies. Eager to bring creativity and dedication to every project, I'm always on the hunt for new ways to excel in brand building and have some fun along the way!</p>
+        <p>Faculty of Communication Science, Universitas Padjadjaran.</p>
+        <div class="contact-links">
+          <a href="https://mail.google.com/mail/?view=cm&fs=1&to=ardianbagusan@gmail.com" target="_blank" rel="noopener noreferrer">Contact Me</a>
+          <a href="https://www.linkedin.com/in/ardianbs/" target="_blank" rel="noopener noreferrer">LinkedIn</a>
+          <a href="https://drive.google.com/file/d/1dYN28zlrCpk17xDq918lLTLwtViSAYQi/view?usp=sharing" target="_blank" rel="noopener noreferrer">Resume</a>
+        </div>
+        <img class="about-portrait" src="./about_portrait.png" alt="Portrait of Ardian Bagus" loading="lazy"><!-- <-- taruh foto potret Anda di media/about_portrait.png -->
+      </div>
+
+      <div class="journey-block">
+        <h2 class="display">My Journey</h2>
+        <div class="journey" id="journey">
+          <svg class="journey-path" aria-hidden="true"><path d=""/></svg>
+        </div>
+      </div>
     </div>
   </section>
 
@@ -399,13 +536,14 @@
 
   <div class="detail-close" id="closeBtn" onclick="closeDetail()" tabindex="0" role="button" aria-label="Close">✕</div>
   <div class="detail-overlay" id="detailOverlay"></div>
+<button id="scrollToTopBtn" onclick="window.scrollTo({top: 0, behavior: 'smooth'})" aria-label="Scroll to top">↑</button>
 
 <script>
 const IMG = {
-  // Hero Image
+  
   hero_profile: "./hero_profile.jpeg", 
   
-  // 1. Garuda Indonesia
+  
   logo_garuda: "./logo_garuda.png", 
   garuda_banner: "./garuda_banner.jpeg",
   garuda_landing_page: "./garuda_landing_page.png",
@@ -413,58 +551,60 @@ const IMG = {
   garuda_destination: "./garuda_destination.png",
   garuda_deck: "./garuda_deck.png",
   garuda_certificate: "./garuda_certificate.png", 
+  garuda_most_viewed: "./garuda_most_viewed.png",
+  logo_growlab: "./growlab_logo.jpg",      
+  growlab_meeting: "./growlab_meeting.jpeg",         
+  growlab_moderator: "./growlab_moderator.jpeg",     
+  growlab_webinar: "./growlab_webinar.jpeg",        
+  growlab_video_cover: "./growlab_video_cover.png", 
   garuda_singapore: "./garuda_singapore.png",
 
-  // 2. HIMA
+
   logo_hima: "./logo_hima.png",
   hima_banner: "./hima_banner.jpeg",
   hima_team: "./hima_team.png",
   hima_content: "./hima_content.png",
 
-  // 3. BEM
+
   logo_bem: "./logo_bem.jpeg",
   bem_banner: "./bem_banner.png",
   bem_seragam: "./bem_seragam.png",
   bem_sola_pic: "./bem_sola_pic.png",
   bem_youthpreneur: "./bem_youthpreneur.jpeg",
 
-  // 4. SOLA
-  logo_sola: "https://via.placeholder.com/150/060b16/3e7cff?text=SOLA",
-  sola_banner: "https://images.unsplash.com/photo-1555421689-d68471e189f2?w=1200&q=80",
-  sola_merch: "https://images.unsplash.com/photo-1560243563-062bfc001d68?w=800&q=80",
-  sola_booth: "https://images.unsplash.com/photo-1531058020387-3be344556be6?w=800&q=80",
-  sola_doc: "https://images.unsplash.com/photo-1554224155-6726b3ff858f?w=800&q=80",
 
-  // 5. Home Theatre
-  logo_hometheatre: "https://via.placeholder.com/150/060b16/3e7cff?text=Theatre",
-  homethe_banner: "https://images.unsplash.com/photo-1470229722913-7c0e2dbbafd3?w=1200&q=80",
-  homethe_story1: "https://images.unsplash.com/photo-1514525253161-7a46d19cd819?w=800&q=80",
-  homethe_story2: "https://images.unsplash.com/photo-1459749411175-04bf5292ceea?w=800&q=80",
+  logo_sola: "./logo_sola.png",
+  sola_banner: "./sola_banner.jpeg",
+  sola_merch: "./sola_merch.png",
+  sola_booth: "./sola_booth.jpeg",
+  sola_doc: "./sola_doc.png",
 
-  // 6. Ideation
-  logo_ideation: "https://via.placeholder.com/150/060b16/3e7cff?text=Ideation",
-  ideation_banner: "https://images.unsplash.com/photo-1519389950473-47ba0277781c?w=1200&q=80",
-  ideation_cert: "https://images.unsplash.com/photo-1589330694653-afaede912c74?w=800&q=80",
-  ideation_pitch: "https://images.unsplash.com/photo-1558403194-611308249d50?w=800&q=80",
 
-  // 7. AWF
-  logo_awf: "https://via.placeholder.com/150/060b16/3e7cff?text=AWF",
-  awf_banner: "https://images.unsplash.com/photo-1557426272-fc759fdf7a8d?w=1200&q=80",
-  awf_cert: "https://images.unsplash.com/photo-1589330694653-afaede912c74?w=800&q=80",
-  awf_research: "https://images.unsplash.com/photo-1454165804606-c3d57bc86b40?w=800&q=80",
+  logo_hometheatre: "./logo_hometheatre.png",
+  homethe_banner: "./homethe_banner.jpeg",
+  homethe_story1: "./homethe_story1.jpeg",
+  homethe_story2: "./homethe_story2.png", 
+  
+  logo_ideation: "./logo_ideation.png",
+  ideation_banner: "./ideation_banner.jpeg",
+  ideation_cert: "./ideation_cert.jpeg",
+  ideation_pitch: "./ideation_pitch.png",
 
-  // 8. World Invent
-  logo_worldinvent: "https://via.placeholder.com/150/060b16/3e7cff?text=World+Invent",
-  worldinvent_banner: "https://images.unsplash.com/photo-1561489396-888724a1543d?w=1200&q=80",
-  worldinvent_cert: "https://images.unsplash.com/photo-1589330694653-afaede912c74?w=800&q=80",
-  worldinvent_medal: "https://images.unsplash.com/photo-1618889482923-38250401a84e?w=800&q=80"
+ 
+  logo_awf: "./logo_awf.png",
+  awf_banner: "./awf_banner.jpeg",
+  awf_cert: "./awf_cert.jpeg",
+  awf_research: "./awf_research(2).png",
+
+
+  logo_worldinvent: "./logo_worldinvent.png",
+  worldinvent_banner: "./worldinvent_banner.jpeg",
+  worldinvent_cert: "./worldinvent_cert.jpeg",
+  worldinvent_medal: "./worldinvent_medal.jpeg"
 };
 
 document.documentElement.style.setProperty('--hero-photo-url', `url(${IMG.hero_profile})`);
 
-/* =========================================================
-   PROJECT DATA 
-   ========================================================= */
 const PROJECTS = [
   {
     id:1, category:"Professional", workType:"Company",
@@ -486,7 +626,13 @@ const PROJECTS = [
       title: "Visit Singapore Campaign",
       desc: "A special project video highlighting Singapore tourism, Copywrite by me and script to end during my time at Garuda Indonesia.",
       url: "https://www.instagram.com/reel/DUVWO_BCTey/",
-      cover: "garuda_singapore"
+      cover: "garuda_singapore",
+      linkLabel: "▶ Watch on Instagram"
+    },
+    mostViewed: {
+      img: "garuda_most_viewed",
+      caption: "Compared to hundreds of Garuda Indonesia videos",
+      banner: "This is the most viewed video"
     },
     certificate:{
       img:"garuda_certificate",
@@ -502,7 +648,37 @@ const PROJECTS = [
     ]
   },
   {
+    id:9, category:"Professional", workType:"Company",
+    theme:"growlab",
+    logo:"logo_growlab", orgName:"PT Growlab Digital Solution — Indonesia",
+    title:"Business Development Intern",
+    badge:"180+ prospects",
+    role:"Business Development Intern",
+    timeline:"Aug 2024 – Dec 2024",
+    overview:"PT Growlab Digital Solution is a business-enablement platform providing website development, social media management, and strategic education tools to drive digital growth for Indonesian MSMEs.",
+    myRole:"Delivered 10+ weekly educational webinars end-to-end — managing content creation, promotional materials, registration, moderation, and live presentation — directly supporting audience engagement and community growth. Conducted outreach to 180+ prospects from a structured database, managing communications and converting 6 into active leads, and initiated an internal business strategy proposal analyzing client profiles and business models to improve the conversion approach.",
+    impact:[
+      {value:"10+", label:"Weekly webinars delivered"},
+      {value:"180+", label:"Prospects contacted"},
+      {value:"6", label:"Active leads converted"}
+    ],
+    videoHighlight: {
+      title: "Speaker & Moderator Highlight",
+      desc: "LinkedIn video of me presenting business-development concepts and appearing as a narasumber (guest speaker) at Growlab's event.",
+      url: "#", // <-- GANTI dengan link video LinkedIn Anda
+      cover: "growlab_video_cover",
+      linkLabel: "▶ Watch on LinkedIn"
+    },
+    banner:"growlab_webinar",
+    gallery:[
+      {img:"growlab_meeting", caption:"Weekly team meeting"},
+      {img:"growlab_moderator", caption:"Moderating the event"},
+      {img:"growlab_webinar", caption:"Webinar — talking about e-commerce"}
+    ]
+  },
+  {
     id:2, category:"Organization", workType:"Student Organization",
+    theme:"hima",
     logo:"logo_hima", orgName:"HIMA Manajemen Komunikasi — Sosial & Lingkungan",
     title:"Camping Class — PIC",
     badge:"2 NGO partners",
@@ -518,6 +694,7 @@ const PROJECTS = [
   },
   {
     id:3, category:"Organization", workType:"Student Organization",
+    theme:"bem",
     logo:"logo_bem", orgName:"BEM Fakultas Ilmu Komunikasi UNPAD",
     title:"Staff, Creative Economy",
     badge:"3 initiatives",
@@ -534,6 +711,7 @@ const PROJECTS = [
   },
   {
     id:4, category:"Committee", workType:"Student Organization",
+    theme:"sola",
     logo:"logo_sola", orgName:"SOLA Market",
     title:"Head of Fundraising",
     badge:"Team of 13",
@@ -551,6 +729,7 @@ const PROJECTS = [
   },
   {
     id:5, category:"Committee", workType:"Student Organization",
+    theme:"hometheatre",
     logo:"logo_hometheatre", orgName:"Home Theatre",
     title:"Head of Music Production",
     badge:"200+ attendees",
@@ -624,11 +803,57 @@ const CATEGORY_TINT = {
   "Committee":     ["rgba(10,23,48,.55)","rgba(6,11,22,.87)"],
   "Competition":   ["rgba(35,64,120,.45)","rgba(6,11,22,.85)"]
 };
-function tintFor(cat){
-  const [a,b] = CATEGORY_TINT[cat] || CATEGORY_TINT["Organization"];
-  return `linear-gradient(160deg, ${a}, ${b})`;
+
+const THEMES = {
+  
+  growlab:{
+    vars:{
+      "--void":"#ffffff","--deep-sea":"#f1f1f1","--ink":"#e7e7e7","--ink-soft":"#dddddd",
+      "--signal":"#111111","--signal-bright":"#111111","--ice":"#141414","--mist":"#6d6d6d"
+    },
+    tint:["rgba(18,18,18,.55)","rgba(4,4,4,.88)"]
+  },
+  
+  hima:{
+    vars:{
+      "--void":"#faf8ff","--deep-sea":"#f0e9fb","--ink":"#e5daf7","--ink-soft":"#dacbf3",
+      "--signal":"#6d28d9","--signal-bright":"#5b21b6","--ice":"#241238","--mist":"#7a6a9c"
+    },
+    tint:["rgba(42,23,71,.5)","rgba(12,6,20,.86)"]
+  },
+  
+  bem:{
+    vars:{
+      "--void":"#fcfbf4","--deep-sea":"#f1eeda","--ink":"#e7e6cb","--ink-soft":"#dcddbd",
+      "--signal":"#2f7d4b","--signal-bright":"#256b3f","--ice":"#1d2b20","--mist":"#71806a"
+    },
+    tint:["rgba(32,57,39,.5)","rgba(10,18,11,.86)"]
+  },
+  
+  hometheatre:{
+    vars:{
+      "--void":"#ffffff","--deep-sea":"#f5f2ee","--ink":"#ece7e0","--ink-soft":"#e2dbd2",
+      "--signal":"#d9531e","--signal-bright":"#c2410c","--ice":"#191410","--mist":"#79726b"
+    },
+    tint:["rgba(23,20,18,.55)","rgba(6,6,6,.88)"]
+  },
+ 
+  sola:{
+    vars:{
+      "--void":"#fff8fb","--deep-sea":"#fae7f1","--ink":"#f4d9e8","--ink-soft":"#eccadd",
+      "--signal":"#d6336c","--signal-bright":"#b02465","--ice":"#31102a","--mist":"#96637f"
+    },
+    tint:["rgba(59,21,51,.5)","rgba(21,7,19,.86)"]
+  }
+};
+
+function bg(key, cat, themeName){
+  const th = THEMES[themeName];
+  const [a,b] = (th && th.tint) || CATEGORY_TINT[cat] || CATEGORY_TINT["Organization"];
+  const grad = `linear-gradient(160deg, ${a}, ${b})`;
+  
+  return (key && IMG[key]) ? `${grad}, url(${IMG[key]})` : grad;
 }
-function bg(key, cat){ return `${tintFor(cat)}, url(${IMG[key]})`; }
 
 let currentFilter = "all";
 function setFilter(f){
@@ -638,7 +863,7 @@ function setFilter(f){
 }
 
 function renderRows(){
-  const categoryOrder = ["Professional","Organization","Committee","Competition"];
+  const categoryOrder = ["Professional","Competition","Committee","Organization"];
   const main = document.getElementById("workRows");
   main.innerHTML = categoryOrder.map(cat=>{
     const items = PROJECTS.filter(p=> p.category===cat && (currentFilter==="all" || p.workType===currentFilter));
@@ -646,7 +871,7 @@ function renderRows(){
     const cards = items.map(p=>`
         <div class="card grain" tabindex="0" role="button" aria-label="${p.title}"
              onclick="openDetail(${p.id})" onkeydown="if(event.key==='Enter')openDetail(${p.id})">
-          <div class="card-art" style="background-image:${bg(p.banner, p.category)}"></div>
+          <div class="card-art" style="background-image:${bg(p.banner, p.category, p.theme)}"></div>
           <div class="card-type">${p.workType}</div>
           <div class="card-badge">${p.badge}</div>
           <div class="card-overlay">
@@ -676,8 +901,16 @@ function openDetail(id){
   const p = PROJECTS.find(x=>x.id===id);
   const overlay = document.getElementById("detailOverlay");
 
+  const THEME_VARS = ["--void","--deep-sea","--ink","--ink-soft","--signal","--signal-bright","--ice","--mist"];
+  const theme = THEMES[p.theme];
+  THEME_VARS.forEach(v=>{
+    if(theme && theme.vars[v]) overlay.style.setProperty(v, theme.vars[v]);
+    else overlay.style.removeProperty(v);
+  });
+
   const metaItems = [
     `<div class="meta-item"><div class="meta-label">Role</div><div class="meta-value">${p.role}</div></div>`,
+    p.timeline ? `<div class="meta-item"><div class="meta-label">Timeline</div><div class="meta-value">${p.timeline}</div></div>` : "",
     `<div class="meta-item"><div class="meta-label">Type</div><div class="meta-value">${p.workType}</div></div>`,
     p.teamSize ? `<div class="meta-item"><div class="meta-label">Team</div><div class="meta-value">${p.teamSize} people</div></div>` : ""
   ].join("");
@@ -700,13 +933,21 @@ function openDetail(id){
         <div style="background:var(--ink-soft); border:1px solid rgba(234,240,255,.08); border-radius:8px; padding:1.5rem; display:flex; gap:1.5rem; align-items:center; flex-wrap:wrap;">
           <div style="flex:1; min-width:200px;">
             <p style="margin-bottom:1rem; font-size:.95rem;">${p.videoHighlight.desc}</p>
-            <a href="${p.videoHighlight.url}" target="_blank" rel="noopener noreferrer" class="btn btn-primary" style="text-decoration:none; display:inline-flex;">▶ Watch on Instagram</a>
+            <a href="${p.videoHighlight.url}" target="_blank" rel="noopener noreferrer" class="btn btn-primary" style="text-decoration:none; display:inline-flex;">${p.videoHighlight.linkLabel || "▶ Watch Video"}</a>
           </div>
           <div style="width:min(100%, 300px); aspect-ratio:16/9; background-image:url(${IMG[p.videoHighlight.cover]}); background-size:cover; background-position:center; border-radius:6px; border:1px solid rgba(255,255,255,.1);"></div>
         </div>
       </div>` : "";
 
-  // Blok sertifikat gaya "hero" — muncul di bawah Gallery jika project punya p.certificate
+  const mostViewedBlock = p.mostViewed ? `
+      <div class="detail-section">
+        <div class="mostviewed-wrap">
+          <div class="mostviewed-caption">${p.mostViewed.caption}</div>
+          <div class="mostviewed-media"><img src="${IMG[p.mostViewed.img]}" alt="${p.mostViewed.banner}" loading="lazy"></div>
+          <div class="mostviewed-banner">${p.mostViewed.banner}</div>
+        </div>
+      </div>` : "";
+
   const certBlock = p.certificate ? `
       <div class="detail-section">
         <h3>Certificate</h3>
@@ -719,8 +960,23 @@ function openDetail(id){
         </div>
       </div>` : "";
 
+  const galleryBlock = (p.gallery && p.gallery.length) ? `
+      <div class="detail-section">
+        <h3>Gallery</h3>
+        <div class="gallery-grid">
+          ${p.gallery.map(g=>`
+            <div class="gallery-wrapper">
+              <a ${g.link ? `href="${g.link}" target="_blank" rel="noopener noreferrer"` : ""} 
+                 class="gallery-item" 
+                 style="background-image:url(${IMG[g.img]}); cursor:${g.link ? 'pointer' : 'default'}">
+                <span>${g.caption}</span>
+              </a>
+            </div>`).join("")}
+        </div>
+      </div>` : "";
+
   overlay.innerHTML = `
-    <div class="detail-banner grain" style="background-image:${bg(p.banner, p.category)}">
+    <div class="detail-banner grain" style="background-image:${bg(p.banner, p.category, p.theme)}">
       <div class="detail-banner-content">
         <div class="detail-org">
           <img src="${IMG[p.logo]}" alt="">
@@ -731,6 +987,7 @@ function openDetail(id){
       </div>
     </div>
     <div class="detail-body">
+      <div class="detail-inner">
       <div class="meta-row">${metaItems}</div>
 
       <div class="detail-section">
@@ -747,21 +1004,12 @@ function openDetail(id){
       
       ${videoBlock}
 
-      <div class="detail-section">
-        <h3>Gallery</h3>
-        <div class="gallery-grid">
-          ${p.gallery.map(g=>`
-            <div class="gallery-wrapper">
-              <a ${g.link ? `href="${g.link}" target="_blank" rel="noopener noreferrer"` : ""} 
-                 class="gallery-item" 
-                 style="background-image:url(${IMG[g.img]}); cursor:${g.link ? 'pointer' : 'default'}">
-                <span>${g.caption}</span>
-              </a>
-            </div>`).join("")}
-        </div>
-      </div>
+      ${mostViewedBlock}
+
+      ${galleryBlock}
 
       ${certBlock}
+      </div>
     </div>
   `;
 
@@ -770,10 +1018,6 @@ function openDetail(id){
   document.body.style.overflow = "hidden";
   overlay.scrollTop = 0;
 
-  // ANIMASI ZOOM FLIP MELAYANG KE TENGAH
-  // Hanya untuk perangkat dengan mouse asli — di layar sentuh, "tap"
-  // memicu mouseenter tapi mouseleave tidak pernah datang, jadi zoom
-  // dan blur akan tersangkut terbuka.
   const canHover = window.matchMedia("(hover: hover) and (pointer: fine)").matches;
   const wrappers = overlay.querySelectorAll('.gallery-wrapper');
   if (canHover) wrappers.forEach(wrap => {
@@ -823,9 +1067,144 @@ document.getElementById("closeBtn").style.display = "none";
 
 window.addEventListener("scroll", ()=>{
   document.getElementById("nav").classList.toggle("scrolled", window.scrollY > 40);
+  const topBtn = document.getElementById("scrollToTopBtn");
+  if(window.scrollY > 400) {
+    topBtn.classList.add("show");
+  } else {
+    topBtn.classList.remove("show");
+  }
 });
 
 renderRows();
+
+const JOURNEY = [
+  {year:"Aug 2022", title:"Started University", x:12,
+   desc:"Joined the Faculty of Communication Science (Manajemen Komunikasi), Universitas Padjadjaran.",
+   summary:"The starting point — communication science at Universitas Padjadjaran, where everything on this timeline began.",
+   images:[]},
+  {year:"2023", title:"Student Organizations", x:40,
+   desc:"Staff of Creative Economy at BEM Fikom UNPAD and PIC of Camping Class at HIMA Manajemen Komunikasi.",
+   summary:"Ran the Seragam BEM project and Youthpreneur media partnerships at BEM Fikom, and led HIMA's Camping Class with two NGO partners.",
+   images:["bem_seragam","bem_youthpreneur","hima_team"]},
+  {year:"2023", title:"Committee Leadership", x:68,
+   desc:"Head of Fundraising at SOLA Market and Head of Music Production at Home Theatre.",
+   summary:"Led a fundraising team of 13 at SOLA Market and produced original music for Home Theatre's 200+ attendee stage show.",
+   images:["sola_merch","homethe_story1"]},
+  {year:"2024", title:"Competition Season", x:42,
+   desc:"3rd place at Ideation (Epicentrum UNPAD), 2nd place at AWF Brand Innovation, and Special Award of Merit at World Invent Singapore.",
+   summary:"Three podiums in one year: Ideation (3rd), AWF Brand Innovation (2nd), and a Special Award of Merit at World Invent Singapore.",
+   images:["ideation_cert","awf_cert","worldinvent_medal"]},
+  {year:"Aug–Dec 2024", title:"Growlab Digital Solution", x:14,
+   desc:"Business Development Intern — webinars, prospect outreach, and business strategy for Indonesian MSMEs.",
+   summary:"10+ weekly webinars delivered end-to-end, 180+ prospects contacted, and 6 converted into active leads.",
+   images:["growlab_meeting","growlab_webinar"]},
+  {year:"2025", title:"Garuda Indonesia", x:55,
+   desc:"Media Marketing Communication Intern — landing pages, TikTok content, destination guides, and strategy decks.",
+   summary:"23 landing pages, 4 TikToks, 54 destination guides, and 2 tourism storyboards for Indonesia's national airline.",
+   images:["garuda_landing_page","garuda_tiktok","garuda_destination"]},
+  {year:"Feb 2026", title:"Graduated from UNPAD", x:22,
+   desc:"Graduated from the Faculty of Communication Science, Universitas Padjadjaran.",
+   summary:"Closed the university chapter — graduated from Fikom UNPAD, three and a half years after it all started.",
+   images:[]}
+];
+
+function renderJourney(){
+  const wrap = document.getElementById("journey");
+  if(!wrap) return;
+  wrap.querySelectorAll(".journey-item").forEach(el=>el.remove());
+  JOURNEY.forEach(m=>{
+    const el = document.createElement("div");
+    el.className = "journey-item" + (m.x > 55 ? " flip" : "");
+    el.style.setProperty("--jx", m.x + "%");
+    el.innerHTML = `
+      <div class="journey-dot"></div>
+      <div class="journey-text">
+        <div class="journey-year">${m.year}</div>
+        <div class="journey-title">${m.title}</div>
+        <div class="journey-desc">${m.desc}</div>
+      </div>`;
+    wrap.appendChild(el);
+  });
+  requestAnimationFrame(drawJourneyPath);
+
+  const items = wrap.querySelectorAll(".journey-item");
+  if("IntersectionObserver" in window){
+    const io = new IntersectionObserver(entries=>{
+      entries.forEach(e=>{
+        if(e.isIntersecting){ e.target.classList.add("in-view"); io.unobserve(e.target); }
+      });
+    }, {threshold:.35});
+    items.forEach(el=>io.observe(el));
+  } else {
+    items.forEach(el=>el.classList.add("in-view"));
+  }
+}
+
+function drawJourneyPath(){
+  const wrap = document.getElementById("journey");
+  if(!wrap) return;
+  const svg = wrap.querySelector(".journey-path");
+  const dots = [...wrap.querySelectorAll(".journey-dot")];
+  if(!svg || dots.length < 2) return;
+  const wr = wrap.getBoundingClientRect();
+  svg.setAttribute("viewBox", `0 0 ${Math.round(wr.width)} ${Math.round(wr.height)}`);
+  const pts = dots.map(d=>{
+    const r = d.getBoundingClientRect();
+    return {x: r.left - wr.left + r.width/2, y: r.top - wr.top + r.height/2};
+  });
+  let dAttr = `M ${pts[0].x.toFixed(1)} ${pts[0].y.toFixed(1)}`;
+  for(let i=1; i<pts.length; i++){
+    const a = pts[i-1], b = pts[i], my = ((a.y + b.y)/2).toFixed(1);
+    dAttr += ` C ${a.x.toFixed(1)} ${my}, ${b.x.toFixed(1)} ${my}, ${b.x.toFixed(1)} ${b.y.toFixed(1)}`;
+  }
+  svg.querySelector("path").setAttribute("d", dAttr);
+}
+window.addEventListener("resize", drawJourneyPath);
+
+let journeyPopup = null;
+function initJourneyPopups(){
+  if(!window.matchMedia("(hover: hover) and (pointer: fine)").matches) return;
+  if(!journeyPopup){
+    journeyPopup = document.createElement("div");
+    journeyPopup.className = "journey-popup";
+    document.body.appendChild(journeyPopup);
+    window.addEventListener("scroll", ()=>journeyPopup.classList.remove("show"), {passive:true});
+  }
+  document.querySelectorAll("#journey .journey-item").forEach((el, i)=>{
+    const m = JOURNEY[i];
+    el.addEventListener("mouseenter", ()=>{
+      const imgs = (m.images || []).filter(k=>IMG[k]);
+      journeyPopup.innerHTML = `
+        <div class="jp-year">${m.year}</div>
+        <div class="jp-title">${m.title}</div>
+        <div class="jp-summary">${m.summary || m.desc}</div>
+        ${imgs.length ? `<div class="jp-images">${imgs.map(k=>`<div style="background-image:url(${IMG[k]})"></div>`).join("")}</div>` : ""}`;
+  
+      journeyPopup.style.visibility = "hidden";
+      journeyPopup.classList.add("show");
+      const pw = journeyPopup.offsetWidth, ph = journeyPopup.offsetHeight;
+      const dot = el.querySelector(".journey-dot");
+      const r = dot.getBoundingClientRect();
+      const jr = document.getElementById("journey").getBoundingClientRect();
+
+      let x = r.right + 16;
+      if(x + pw > window.innerWidth - 12) x = window.innerWidth - pw - 12;
+      x = Math.max(x, jr.left);
+
+      let y = r.top - ph - 14;
+      if(y < 12) y = r.bottom + 14;
+      y = Math.max(12, Math.min(y, window.innerHeight - ph - 12));
+
+      journeyPopup.style.left = x + "px";
+      journeyPopup.style.top = y + "px";
+      journeyPopup.style.visibility = "";
+    });
+    el.addEventListener("mouseleave", ()=>journeyPopup.classList.remove("show"));
+  });
+}
+
+renderJourney();
+initJourneyPopups();
 </script>
 </body>
 </html>
