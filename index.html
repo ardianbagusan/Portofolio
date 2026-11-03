@@ -653,7 +653,7 @@ const IMG = {
 
   /* BLIBLI — put these 6 files next to index.html (banner is optional) */
   logo_blibli: "./logo_blibli.png",
-  blibli_banner: "./blibli_1.jpeg",
+  blibli_banner: "./blibli_banner.jpeg",
   blibli_1: "./blibli_1.jpeg",
   blibli_2: "./blibli_2.jpeg",
   blibli_3: "./blibli_3.jpeg",
@@ -669,7 +669,7 @@ document.documentElement.style.setProperty('--hero-photo-url', `url(${IMG.hero_p
 
 const PROJECTS = [
   {
-    id:10, category:"Professional", workType:"Company",
+    id:10, slug:"blibli", category:"Professional", workType:"Company",
     theme:"blibli",
     logo:"logo_blibli", orgName:"Blibli",
     title:"Seller Experience & Improvement Intern",
@@ -694,7 +694,7 @@ const PROJECTS = [
     ]
   },
   {
-    id:1, category:"Professional", workType:"Company",
+    id:1, slug:"garuda-indonesia", category:"Professional", workType:"Company",
     logo:"logo_garuda", orgName:"PT Garuda Indonesia (Persero) Tbk",
     title:"Media Marketing Communication Intern",
     badge:"23 LPs",
@@ -735,7 +735,7 @@ const PROJECTS = [
     ]
   },
   {
-    id:9, category:"Professional", workType:"Company",
+    id:9, slug:"growlab", category:"Professional", workType:"Company",
     theme:"growlab",
     logo:"logo_growlab", orgName:"PT Growlab Digital Solution — Indonesia",
     title:"Business Development Intern",
@@ -764,7 +764,7 @@ const PROJECTS = [
     ]
   },
   {
-    id:2, category:"Organization", workType:"Student Organization",
+    id:2, slug:"hima", category:"Organization", workType:"Student Organization",
     theme:"hima",
     logo:"logo_hima", orgName:"HIMA Manajemen Komunikasi — Sosial & Lingkungan",
     title:"Camping Class — PIC",
@@ -780,7 +780,7 @@ const PROJECTS = [
     ]
   },
   {
-    id:3, category:"Organization", workType:"Student Organization",
+    id:3, slug:"bem-fikom", category:"Organization", workType:"Student Organization",
     theme:"bem",
     logo:"logo_bem", orgName:"BEM Fakultas Ilmu Komunikasi UNPAD",
     title:"Staff, Creative Economy",
@@ -797,7 +797,7 @@ const PROJECTS = [
     ]
   },
   {
-    id:4, category:"Committee", workType:"Student Organization",
+    id:4, slug:"sola-market", category:"Committee", workType:"Student Organization",
     theme:"sola",
     logo:"logo_sola", orgName:"SOLA Market",
     title:"Head of Fundraising",
@@ -815,7 +815,7 @@ const PROJECTS = [
     ]
   },
   {
-    id:5, category:"Committee", workType:"Student Organization",
+    id:5, slug:"home-theatre", category:"Committee", workType:"Student Organization",
     theme:"hometheatre",
     logo:"logo_hometheatre", orgName:"Home Theatre",
     title:"Head of Music Production",
@@ -832,7 +832,7 @@ const PROJECTS = [
     ]
   },
   {
-    id:6, category:"Competition", workType:"Competition",
+    id:6, slug:"ideation", category:"Competition", workType:"Competition",
     logo:"logo_ideation", orgName:"Epicentrum Universitas Padjadjaran 2024",
     title:"3rd Place — Ideation",
     hook:"Team Firstwell — Epicentrum UNPAD 2024",
@@ -849,7 +849,7 @@ const PROJECTS = [
     ]
   },
   {
-    id:7, category:"Competition", workType:"Competition",
+    id:7, slug:"advertising-week-festival", category:"Competition", workType:"Competition",
     logo:"logo_awf", orgName:"Advertising Week Festival 2024",
     title:"2nd Place — Brand Innovation",
     hook:"Team The Emperors — Advertising Week Festival 2024",
@@ -866,7 +866,7 @@ const PROJECTS = [
     ]
   },
   {
-    id:8, category:"Competition", workType:"Competition",
+    id:8, slug:"world-invent-singapore", category:"Competition", workType:"Competition",
     logo:"logo_worldinvent", orgName:"Universitas Padjadjaran",
     title:"Student Excellence (Mahasiswa Berprestasi) — Universitas Padjadjaran",
     hook:"Special Award of Merit — World Invent Singapore 2024",
@@ -1117,7 +1117,7 @@ function openDetail(id){
   document.body.style.overflow = "hidden";
   overlay.scrollTop = 0;
   overlay.focus({preventScroll:true});
-  if(!(history.state && history.state.detail)) history.pushState({detail:id}, "", "#project-" + id);
+  if(!(history.state && history.state.detail)) history.pushState({detail:id}, "", "#" + p.slug);
 
   const canHover = window.matchMedia("(hover: hover) and (pointer: fine)").matches;
 
@@ -1131,6 +1131,13 @@ function openDetail(id){
 }
 
 let lastFocus = null;
+
+// "index.html#blibli" -> the Blibli project (old "#project-10" links still work)
+function projectFromHash(){
+  const h = decodeURIComponent(location.hash.slice(1)).toLowerCase();
+  const legacy = h.match(/^project-(\d+)$/);
+  return PROJECTS.find(p=> p.slug === h || (legacy && p.id === +legacy[1]));
+}
 
 function hideDetail(){
   document.getElementById("detailOverlay").classList.remove("open");
@@ -1146,8 +1153,8 @@ function closeDetail(){
 }
 window.addEventListener("popstate", ()=>{
   const open = document.getElementById("detailOverlay").classList.contains("open");
-  const m = location.hash.match(/^#project-(\d+)$/);
-  if(m && PROJECTS.some(p=>p.id===+m[1])) openDetail(+m[1]);
+  const hit = projectFromHash();
+  if(hit) openDetail(hit.id);
   else if(open) hideDetail();
 });
 
@@ -1334,12 +1341,12 @@ initJourneyPopups();
   spy();
 })();
 
-// Open a project directly from a link like index.html#project-10
+// Open a project directly from a link like index.html#blibli
 (function(){
-  const m = location.hash.match(/^#project-(\d+)$/);
-  if(m && PROJECTS.some(p=>p.id===+m[1])){
-    history.replaceState({detail:+m[1]}, "", location.hash);
-    openDetail(+m[1]);
+  const hit = projectFromHash();
+  if(hit){
+    history.replaceState({detail:hit.id}, "", "#" + hit.slug);
+    openDetail(hit.id);
   }
 })();
 </script>
