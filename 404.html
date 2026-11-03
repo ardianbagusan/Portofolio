@@ -1,0 +1,1373 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Ardian Bagus — Portfolio</title>
+<meta name="description" content="Ardian Bagus — Portfolio">
+<meta name="theme-color" content="#f7f9ff">
+<script>
+// Clean project links. On a GitHub Pages project site (user.github.io/Repo/) a project opens at
+// /Repo/blibli (needs 404.html = copy of index.html). Anywhere else it falls back to index.html#blibli.
+(function(){
+  var parts = location.pathname.split('/').filter(Boolean);
+  window.PATH_BASE = (/\.github\.io$/.test(location.hostname) && parts.length) ? '/' + parts[0] + '/' : null;
+  if(window.PATH_BASE){ var b = document.createElement('base'); b.href = window.PATH_BASE; document.head.appendChild(b); }
+})();
+</script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="anonymous">
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:ital,wght@0,300..800;1,300..800&display=swap" rel="stylesheet">
+<style>
+  :root{
+    
+    --void:#f7f9ff;        
+    --deep-sea:#e8eefb;    
+    --ink:#dbe6f9;
+    --ink-soft:#cfdcf5;
+    --signal:#3e7cff;      
+    --signal-bright:#2456c9; 
+    --ice:#0d1b33;         
+    --mist:#5b6c8f;        
+    --grain-opacity:.05;
+  }
+
+  #scrollToTopBtn {
+    position: fixed;
+    bottom: 2.5rem;
+    right: clamp(1.25rem, 4vw, 3.5rem); 
+    z-index: 95;
+    width: 46px;
+    height: 46px;
+    border-radius: 50%;
+    background: var(--signal);
+    color: #fff;
+    border: none;
+    font-size: 1.4rem;
+    font-weight: bold;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 10px 25px -5px rgba(62,124,255,0.4);
+    opacity: 0;
+    visibility: hidden;
+    transform: translateY(20px);
+    transition: opacity 0.3s ease, transform 0.3s cubic-bezier(.2,.8,.2,1), visibility 0.3s ease, background 0.2s ease;
+  }
+  
+  #scrollToTopBtn.show {
+    opacity: 1;
+    visibility: visible;
+    transform: translateY(0);
+  }
+  
+  #scrollToTopBtn:hover {
+    background: var(--signal-bright);
+    transform: translateY(-4px) scale(1.05); 
+  }
+
+  *{box-sizing:border-box; margin:0; padding:0;}
+  html{scroll-behavior:smooth;}
+  body{
+    background:var(--void);
+    color:var(--ice);
+    font-family:'Plus Jakarta Sans', sans-serif;
+    -webkit-font-smoothing:antialiased;
+    overflow-x:hidden;   
+    overflow-x:clip;     
+  }
+  a{color:inherit; text-decoration:none;}
+  ::selection{background:var(--signal); color:var(--void);}
+  :focus-visible{outline:2px solid var(--signal-bright); outline-offset:3px;}
+
+  .grain{position:relative; isolation:isolate;}
+  .grain::before{
+    content:"";
+    position:absolute; inset:0;
+    background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+    opacity:var(--grain-opacity);
+    mix-blend-mode:overlay;
+    pointer-events:none;
+    z-index:2;
+  }
+
+  .eyebrow{font-size:.72rem; letter-spacing:.22em; text-transform:uppercase; color:var(--signal-bright); font-weight:700;}
+  .display{font-family:'Plus Jakarta Sans', sans-serif; letter-spacing:.02em; line-height:.92; font-weight:400;}
+  .mono{font-family:'Plus Jakarta Sans', sans-serif;}
+
+  
+  #nav{
+    position:fixed; top:0; left:0; right:0; z-index:100;
+    display:flex; align-items:center; justify-content:space-between;
+    padding:1.6rem clamp(1.25rem, 4vw, 3.5rem);
+    background:linear-gradient(to bottom, rgba(247,249,255,.9), transparent);
+    transition:background .35s ease, padding .35s ease, box-shadow .35s ease;
+  }
+  #nav.scrolled{
+    background:rgba(247,249,255,.94);
+    backdrop-filter:blur(10px);
+    padding:1.05rem clamp(1.25rem, 4vw, 3.5rem);
+    box-shadow:0 1px 0 rgba(13,27,51,.1);
+  }
+  .logo{font-family:'Plus Jakarta Sans', sans-serif; font-size:1.5rem; letter-spacing:.06em; color:var(--ice);}
+  .logo span{color:var(--signal-bright);}
+  .nav-links{display:flex; gap:clamp(1.2rem,3vw,2.4rem); list-style:none;}
+  .nav-links a{font-size:.82rem; font-weight:600; letter-spacing:.04em; text-transform:uppercase; color:var(--mist); transition:color .2s ease;}
+  .nav-links a:hover{color:var(--ice);}
+
+  
+  .hero{
+    position:relative; min-height:92vh; display:flex; align-items:flex-end; overflow:hidden;
+    padding:clamp(6rem,10vw,9rem) clamp(1.25rem,4vw,3.5rem) clamp(3.5rem,7vw,5rem);
+    background:
+      radial-gradient(120% 90% at 15% 0%, rgba(62,124,255,.28), transparent 60%),
+      linear-gradient(160deg, var(--ink) 0%, var(--deep-sea) 45%, var(--void) 100%);
+  }
+  .hero-photo{
+    position:absolute; inset:0;
+    background-image:var(--hero-photo-url);
+    background-position:center center; background-size:cover; background-repeat:no-repeat;
+    -webkit-mask-image:radial-gradient(circle at center, #000 30%, rgba(0,0,0,0.3) 80%, transparent 100%);
+            mask-image:radial-gradient(circle at center, #000 30%, rgba(0,0,0,0.3) 80%, transparent 100%);
+    opacity:.9;
+  }
+  .hero::after{
+    content:""; position:absolute; inset:0;
+    background:linear-gradient(to top, var(--void) 0%, transparent 42%);
+    pointer-events:none; z-index:1;
+  }
+  .hero-content{position:relative; z-index:3; max-width:760px;}
+  .hero-content .eyebrow{margin-bottom:1rem; display:block;}
+  .hero-title{font-size:clamp(2.6rem, 9vw, 6.4rem); color:var(--ice); margin-bottom:1.1rem;}
+  .hero-tagline{font-size:clamp(1rem,1.6vw,1.2rem); color:var(--mist); max-width:46ch; line-height:1.55; margin-bottom:2.1rem;}
+  .hero-actions{display:flex; gap:.85rem; flex-wrap:wrap;}
+  .btn{display:inline-flex; align-items:center; gap:.55rem; padding:.85rem 1.6rem; border-radius:5px; font-weight:700; font-size:.92rem; cursor:pointer; border:none; transition:transform .18s ease, background .18s ease, border-color .18s ease;}
+  .btn:hover{transform:translateY(-1px);}
+  .btn-primary{background:var(--ice); color:var(--void);}
+  .btn-primary:hover{filter:brightness(1.15);}
+  .btn-secondary{background:rgba(13,27,51,.06); border:1px solid rgba(13,27,51,.3); color:var(--ice);}
+  .btn-secondary:hover{background:rgba(13,27,51,.12);}
+
+  
+  .filter-bar{
+    display:flex; gap:.7rem; flex-wrap:wrap;
+   
+    position:sticky; top:56px; z-index:90;
+    padding:.9rem clamp(1.25rem,4vw,3.5rem); margin-bottom:1.4rem;
+    background:rgba(247,249,255,.92);
+    backdrop-filter:blur(10px);
+    -webkit-backdrop-filter:blur(10px);
+   
+    scroll-margin-top:70px;
+  }
+  .filter-pill{
+    padding:.7rem 1.5rem; border-radius:999px; font-size:.92rem; font-weight:700;
+    background:transparent; border:1px solid rgba(13,27,51,.28); color:var(--mist);
+    cursor:pointer; transition:all .2s ease;
+  }
+  .filter-pill:hover{color:var(--ice); border-color:rgba(13,27,51,.55);}
+  .filter-pill.active{background:var(--signal); border-color:var(--signal); color:#fff;}
+
+  /* ---------------- ROWS / CARDS ---------------- */
+  main{position:relative; z-index:2; padding:1rem 0 5rem;}
+  .row{margin-bottom:3rem;}
+  .row-title{font-size:1.05rem; font-weight:700; letter-spacing:.02em; padding:0 clamp(1.25rem,4vw,3.5rem); margin-bottom:1rem;}
+  .row-wrap{position:relative;}
+  .row-track{display:flex; gap:1rem; overflow-x:auto; scroll-behavior:smooth; padding:0 clamp(1.25rem,4vw,3.5rem) 1rem; scrollbar-width:none;}
+  .row-track::-webkit-scrollbar{display:none;}
+  .row-arrow{position:absolute; top:0; bottom:1rem; width:64px; display:flex; align-items:center; justify-content:center; background:linear-gradient(to right, var(--void) 15%, transparent); color:var(--ice); font-size:1.4rem; cursor:pointer; border:none; z-index:5; opacity:0; transition:opacity .2s ease;}
+  .row-wrap:hover .row-arrow{opacity:1;}
+  .row-arrow.right{right:0; left:auto; background:linear-gradient(to left, var(--void) 15%, transparent);}
+
+  .card {
+    flex: 0 0 auto; 
+    
+    width: clamp(min(280px, 85vw), 30vw, 620px);
+    
+    container-type: inline-size;
+    
+    aspect-ratio: 16/9; 
+    border-radius: 7px;
+    position: relative; 
+    cursor: pointer; 
+    overflow: hidden;
+    transition: transform .28s cubic-bezier(.2,.8,.2,1), box-shadow .28s ease, z-index 0s;
+  }
+  
+  .card:hover, .card:focus-visible {
+    transform: scale(1.04) translateY(-6px); 
+    box-shadow: 0 24px 45px -12px rgba(0,0,0,.6), 0 0 0 1px rgba(234,240,255,.15);
+    z-index: 10;
+  }
+  
+  .card-art {position:absolute; inset:0; background-position:center; background-size:cover; background-repeat:no-repeat;}
+  
+  .card-badge {
+    position:absolute; top:clamp(.6rem, 2.5cqw, 1rem); right:clamp(.6rem, 2.5cqw, 1rem); z-index:3;
+    font-weight:700;
+    font-size:.7rem;                          
+    font-size:clamp(.6rem, 2.4cqw, .8rem);    
+    padding:.35rem .65rem; border-radius:4px; background:rgba(6,11,22,.6);
+    border:1px solid rgba(234,240,255,.25); color:#7fa8ff; backdrop-filter:blur(3px);
+  }
+  
+  .card-type {
+    position:absolute; top:clamp(.6rem, 2.5cqw, 1rem); left:clamp(.6rem, 2.5cqw, 1rem); z-index:3;
+    font-weight:700; letter-spacing:.06em; text-transform:uppercase;
+    font-size:.65rem;                         
+    font-size:clamp(.55rem, 2.2cqw, .75rem);  
+    padding:.35rem .65rem; border-radius:4px; background:rgba(6,11,22,.6);
+    border:1px solid rgba(234,240,255,.2); color:#fff; backdrop-filter:blur(3px);
+  }
+  
+  .card-overlay {position:absolute; left:0; right:0; bottom:0; z-index:3; padding:clamp(.85rem, 4cqw, 1.5rem); background:linear-gradient(to top, rgba(6,11,22,.95) 15%, transparent 100%);}
+  
+  .card-cat {font-size:.7rem; font-size:clamp(.58rem, 2.4cqw, .8rem); letter-spacing:.14em; text-transform:uppercase; color:#7fa8ff; font-weight:700; margin-bottom:.3rem; display:block;}
+  
+  
+  .card-title {
+    font-family:'Plus Jakarta Sans', sans-serif;
+    font-weight:700;
+    font-size:1.3rem;                          
+    font-size:clamp(1.02rem, 5cqw, 1.85rem);   
+    line-height:1.12; color:#fff;}
+  
+  .card-hook {font-size:.85rem; font-size:clamp(.72rem, 3cqw, .95rem); color:rgba(255,255,255,.78); margin-top:.5rem; max-height:0; opacity:0; overflow:hidden; transition:max-height .25s ease, opacity .25s ease;}
+  .card:hover .card-hook {max-height:4rem; opacity:1;}
+
+  
+  #about{max-width:1200px; margin:2rem auto 6rem; padding:0 clamp(1.25rem,4vw,3.5rem);}
+  
+  .about-grid{display:grid; grid-template-columns:minmax(280px,550px) 1fr; gap:clamp(2rem,5vw,4.5rem); align-items:stretch;}
+  .about-left{display:flex; flex-direction:column;}
+  .about-portrait{
+    
+    margin-top:auto; padding-top:1.8rem;
+    width:100%; max-width:100%; display:block;
+    border-radius:12px;
+  }
+  .about-grid .journey-block{margin-top:0;}
+  @media (max-width:900px){
+    .about-grid{grid-template-columns:1fr;}
+    .about-grid .journey-block{margin-top:3rem;}
+  }
+  #about h2{font-family:'Plus Jakarta Sans',sans-serif; font-size:2.2rem; margin-bottom:1rem;}
+  #about p{color:var(--mist); line-height:1.75; margin-bottom:1rem;}
+  #about .contact-links{display:flex; gap:1.2rem; margin-top:1.2rem; flex-wrap:wrap;}
+  #about .contact-links a{font-weight:600; font-size:.9rem; color:var(--signal-bright); border-bottom:1px solid rgba(127,168,255,.35); padding-bottom:.15rem;}
+
+  
+  .journey-block{margin-top:3.5rem;}
+  .journey-block h2{font-family:'Plus Jakarta Sans',sans-serif; font-size:2.2rem; margin-bottom:1.8rem;}
+  .journey{position:relative; padding:.5rem 0;}
+  .journey-path{position:absolute; inset:0; width:100%; height:100%; pointer-events:none;}
+  .journey-path path{stroke:rgba(62,124,255,.5); stroke-width:4; stroke-linecap:round; stroke-dasharray:.1 13; fill:none;}
+  .journey-item{
+    position:relative; min-height:160px;
+    opacity:0; transform:translateY(26px);
+    transition:opacity .6s ease, transform .6s cubic-bezier(.2,.8,.2,1);
+  }
+  .journey-item.in-view{opacity:1; transform:none;}
+  .journey-dot{
+    position:absolute; left:var(--jx); top:50%; transform:translate(-50%,-50%);
+    width:18px; height:18px; border-radius:50%;
+    background:var(--signal); border:3px solid var(--ice);
+    box-shadow:0 0 0 6px rgba(62,124,255,.22); z-index:2;
+  }
+  .journey-text{
+    position:absolute; top:50%; transform:translateY(-50%);
+    left:calc(var(--jx) + 30px); max-width:min(340px, calc(100% - var(--jx) - 44px));
+    z-index:2;
+  }
+  .journey-item.flip .journey-text{
+    left:auto; right:calc(100% - var(--jx) + 30px);
+    max-width:min(340px, calc(var(--jx) - 44px));
+    text-align:right;
+  }
+  .journey-year{color:var(--signal-bright); font-weight:800; font-size:.8rem; letter-spacing:.1em; text-transform:uppercase;}
+  .journey-title{font-weight:700; font-size:1.05rem; margin:.2rem 0 .3rem;}
+  .journey-desc{color:var(--mist); font-size:.88rem; line-height:1.65;}
+  .journey-item{cursor:default;}
+
+  
+  .journey-popup{
+    position:fixed; z-index:300; width:min(470px, 46vw);
+    background:var(--deep-sea); border:1px solid rgba(13,27,51,.15);
+    border-radius:10px; padding:1.1rem 1.2rem;
+    box-shadow:0 24px 50px -14px rgba(0,0,0,.65);
+    opacity:0; pointer-events:none; visibility:hidden;
+    transform:translateY(8px);
+    transition:opacity .2s ease, transform .2s ease;
+  }
+  .journey-popup.show{opacity:1; visibility:visible; transform:none;}
+  .jp-year{color:var(--signal-bright); font-weight:800; font-size:.72rem; letter-spacing:.1em; text-transform:uppercase;}
+  .jp-title{font-weight:700; font-size:1rem; margin:.2rem 0 .35rem;}
+  .jp-summary{color:var(--mist); font-size:.85rem; line-height:1.6;}
+  .jp-images{display:flex; gap:.55rem; margin-top:.9rem;}
+  .jp-images div{flex:1; aspect-ratio:3/4; border-radius:6px; background-size:cover; background-position:center;}
+  @media (max-width:640px){
+    
+    .journey-item{min-height:130px;}
+    .journey-dot{left:16px;}
+    .journey-text, .journey-item.flip .journey-text{
+      left:46px; right:auto; text-align:left;
+      max-width:calc(100% - 60px);
+    }
+  }
+  footer{
+    background:#fff;
+    border-top:1px solid rgba(13,27,51,.08);
+    color:#0d1b33;
+    padding:2.4rem clamp(1.25rem,4vw,3.5rem);
+    display:flex; justify-content:space-between; flex-wrap:wrap; gap:1rem;
+    font-size:.8rem; font-weight:600;
+  }
+
+  
+  .detail-overlay{
+    position:fixed; inset:0; z-index:200; background:var(--void);
+    color:var(--ice); /* teks selalu mengikuti tema halaman detail */
+    transform:translateY(100%); opacity:0; visibility:hidden; overflow-y:auto;
+    transition:transform .4s cubic-bezier(.2,.8,.2,1), opacity .4s ease, visibility 0s linear .4s;
+  }
+  .detail-overlay.open{
+    transform:none; 
+    opacity:1; 
+    visibility:visible; 
+    transition:transform .4s cubic-bezier(.2,.8,.2,1), opacity .4s ease, visibility 0s;
+  }
+  .detail-close{
+    position:fixed; top:1.4rem; right:clamp(1.25rem,4vw,3.5rem); z-index:210;
+    width:42px; height:42px; border-radius:50%; background:rgba(6,11,22,.75);
+    border:1px solid rgba(234,240,255,.25); color:#fff; font-size:1.3rem; cursor:pointer;
+    display:flex; align-items:center; justify-content:center; backdrop-filter:blur(4px);
+  }
+  .detail-banner{position:relative; height:52vh; min-height:340px; display:flex; align-items:flex-end; padding:0 clamp(1.25rem,4vw,3.5rem) 2.4rem; background-position:center; background-size:cover; background-repeat:no-repeat;}
+  .detail-banner::after{content:""; position:absolute; inset:0; background:linear-gradient(to top, var(--void) 0%, transparent 55%);}
+  .detail-banner-content{position:relative; z-index:2;}
+  .detail-org{display:flex; align-items:center; gap:.55rem; margin-bottom:.7rem;}
+  .detail-org img{width:46px; height:46px; border-radius:6px; object-fit:contain; background:transparent;}
+  .detail-cat{font-size:.72rem; letter-spacing:.18em; text-transform:uppercase; color:var(--signal-bright); font-weight:700;}
+  .detail-title{font-family:'Plus Jakarta Sans', sans-serif; font-size:clamp(1.9rem,5.6vw,4.2rem); line-height:1.05; color:var(--ice);}
+  .detail-org-name{color:var(--mist); font-size:.9rem; margin-top:.5rem;}
+
+  .detail-body{position:relative;}
+  .detail-inner{max-width:920px; margin:0 auto; padding:0 clamp(1.25rem,4vw,3.5rem) 6rem;}
+  .meta-row{display:flex; flex-wrap:wrap; gap:2.2rem; padding:1.6rem 0 2.2rem; border-bottom:1px solid rgba(234,240,255,.08); margin-bottom:2.4rem;}
+  .meta-item .meta-label{font-size:.68rem; letter-spacing:.1em; text-transform:uppercase; color:var(--mist); margin-bottom:.3rem;}
+  .meta-item .meta-value{font-weight:700; font-size:.98rem;}
+
+  .detail-section{margin-bottom:2.8rem;}
+  .detail-section h3{font-size:.78rem; letter-spacing:.14em; text-transform:uppercase; color:var(--signal-bright); font-weight:700; margin-bottom:.9rem;}
+  .detail-section p{color:var(--ice); opacity:.88; line-height:1.75; font-size:1rem; max-width:70ch;}
+
+  .impact-grid{display:grid; grid-template-columns:repeat(auto-fit,minmax(150px,1fr)); gap:1.2rem;}
+  .impact-stat{background:var(--deep-sea); border:1px solid rgba(234,240,255,.08); border-radius:8px; padding:1.2rem 1.1rem;}
+  .impact-value{font-family:'Plus Jakarta Sans', sans-serif; font-size:1.6rem; font-weight:800; color:var(--signal-bright);}
+  .impact-label{font-size:.78rem; color:var(--mist); margin-top:.3rem;}
+
+  .gallery-grid {
+    display: grid; 
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); 
+    gap: 1rem;
+  }
+
+  .gallery-wrapper {
+    aspect-ratio: 4/3;
+    position: relative;
+    z-index: 1; 
+  }
+
+  .gallery-item {
+    position: absolute;
+    inset: 0;
+    border-radius: 7px; 
+    display: flex; 
+    align-items: flex-end; 
+    padding: .8rem; 
+    background-position: center; 
+    background-size: cover; 
+    background-repeat: no-repeat;
+    text-decoration: none;
+    transition: transform 0.4s cubic-bezier(0.2, 0.8, 0.2, 1), box-shadow 0.4s ease, border-radius 0.4s ease;
+    transform-origin: center center;
+    z-index: 1;
+  }
+
+  /* Desktop hover: small expand in place (no blur, no jump to centre) */
+  @media (hover:hover) and (pointer:fine){
+    .gallery-wrapper:hover{z-index:5;}
+    .gallery-wrapper:hover .gallery-item{transform:scale(1.05); box-shadow:0 18px 40px -12px rgba(0,0,0,.55);}
+  }
+
+  .gallery-item.zoomed {
+    box-shadow: 0 40px 100px rgba(0,0,0,1);
+    border-radius: 4px; 
+  }
+
+  .gallery-item span {
+    position: relative; 
+    z-index: 2; 
+    font-size: .8rem; 
+    font-weight: 600; 
+    color: #fff;
+    text-shadow: 0 2px 4px rgba(0,0,0,0.8);
+    transition: opacity 0.3s ease;
+  }
+
+  .gallery-item.zoomed span {
+    opacity: 0.9;
+  }
+
+  .gallery-item::after {
+    content: ""; 
+    position: absolute; 
+    inset: 0; 
+    background: linear-gradient(to top, rgba(6,11,22,.9) 0%, transparent 40%);
+    border-radius: inherit;
+  }
+
+  .mostviewed-wrap{
+    background:var(--deep-sea);
+    border:1px solid rgba(234,240,255,.08);
+    border-radius:8px; overflow:hidden;
+    display:flex; flex-wrap:wrap; align-items:stretch; gap:0;
+  }
+  .mostviewed-caption{
+    flex:1 1 190px; max-width:230px;
+    padding:1.4rem 1.2rem;
+    display:flex; align-items:center; justify-content:center; text-align:center;
+    font-weight:700; font-size:1rem; line-height:1.55;
+  }
+  .mostviewed-media{flex:1 1 300px; min-width:min(100%, 260px);}
+  .mostviewed-media img{width:100%; height:auto; display:block;}
+  .mostviewed-banner{
+    flex-basis:100%; width:100%;
+    padding:1rem 1.2rem; text-align:center; font-weight:700; letter-spacing:.02em;
+  }
+  @media (max-width:640px){
+    .mostviewed-caption{max-width:100%; flex-basis:100%; padding:1.1rem;}
+  }
+
+  .cert-hero{
+    position:relative; border-radius:10px; overflow:hidden;
+    background:
+      radial-gradient(120% 90% at 15% 0%, rgba(62,124,255,.22), transparent 60%),
+      linear-gradient(160deg, var(--ink) 0%, var(--deep-sea) 55%, var(--void) 100%);
+    border:1px solid rgba(234,240,255,.1);
+    padding:clamp(1.2rem, 4vw, 2.6rem);
+    display:flex; flex-direction:column; align-items:center; gap:1.2rem;
+  }
+  .cert-hero img{
+    width:100%; max-width:720px; border-radius:6px; display:block;
+    box-shadow:0 24px 60px -18px rgba(0,0,0,.7);
+  }
+  .cert-caption{text-align:center;}
+  .cert-caption .cert-title{font-weight:700; font-size:1.05rem; color:var(--ice);}
+  .cert-caption p{color:var(--mist); font-size:.9rem; margin-top:.35rem; max-width:60ch;}
+
+  @media (max-width: 640px) {
+    .nav-links{display:none;}
+    .meta-row{gap:1.4rem;}
+    .detail-banner{height:42vh; min-height:260px; padding-bottom:1.6rem;}
+    .detail-section{margin-bottom:2.2rem;}
+    .detail-inner{padding-bottom:4rem;}
+    .impact-grid{grid-template-columns:repeat(auto-fit,minmax(125px,1fr)); gap:.9rem;}
+    .filter-bar{gap:.5rem;}
+    .filter-pill{padding:.55rem 1.15rem; font-size:.82rem;}
+  }
+  @media (prefers-reduced-motion:reduce){
+    *{transition:none !important; scroll-behavior:auto !important;}
+  }
+
+  /* ================= USABILITY LAYER (added) ================= */
+  .skip-link{position:fixed; left:1rem; top:-4rem; z-index:400; background:var(--ice); color:var(--void); padding:.7rem 1.1rem; border-radius:6px; font-weight:700; font-size:.85rem; transition:top .2s ease;}
+  .skip-link:focus{top:1rem;}
+
+  /* Nav: keep links on small screens instead of hiding them */
+  .nav-links a{padding:.4rem .1rem; border-bottom:2px solid transparent;}
+  .nav-links a.active{color:var(--ice); border-bottom-color:var(--signal);}
+  @media (max-width:640px){
+    #nav{padding:1rem 1.25rem;}
+    #nav.scrolled{padding:.75rem 1.25rem;}
+    .logo{font-size:1.1rem;}
+    .nav-links{display:flex; gap:1rem;}
+    .nav-links a{font-size:.7rem; letter-spacing:.02em;}
+    .filter-bar{top:48px; flex-wrap:nowrap; overflow-x:auto; scrollbar-width:none; padding-top:.7rem; padding-bottom:.7rem;}
+    .filter-bar::-webkit-scrollbar{display:none;}
+    .filter-pill{flex:0 0 auto; white-space:nowrap;}
+  }
+
+  /* Rows: swipe-friendly, arrows reachable by keyboard */
+  .row-track{scroll-snap-type:x proximity; overscroll-behavior-x:contain;}
+  /* Room above/below so a hovered (enlarged) card is never clipped by its row.
+     The negative margins cancel the extra padding, so the layout does not move. */
+  .row-track{padding-top:1.5rem; padding-bottom:2.75rem; margin-top:-1.5rem; margin-bottom:-1.75rem;}
+  .row-arrow{top:1.5rem; bottom:2.75rem;}
+  .card{scroll-snap-align:start;}
+  .row-arrow:focus-visible{opacity:1;}
+  .filter-pill:focus-visible, .btn:focus-visible{outline-offset:2px;}
+
+  /* Touch devices: no hover, so show card hook and drop the zoom effect */
+  @media (hover:none){
+    .card-hook{max-height:4rem; opacity:1;}
+    .card:hover{transform:none; box-shadow:none;}
+    .row-arrow{display:none;}
+  }
+
+  /* Detail page */
+  .detail-overlay{overscroll-behavior:contain;}
+  .detail-close{font-family:inherit; padding:0; line-height:1;}
+  .detail-close:hover{background:rgba(6,11,22,.95);}
+  .detail-org img{width:auto; max-width:120px;}
+  .gallery-item:focus-visible{outline:3px solid var(--signal); outline-offset:3px;}
+
+  /* Tap-to-enlarge viewer for touch devices */
+  .lightbox{position:fixed; inset:0; z-index:500; background:rgba(6,11,22,.92); display:none; align-items:center; justify-content:center; flex-direction:column; gap:1rem; padding:1.25rem; cursor:zoom-out;}
+  .lightbox.open{display:flex;}
+  .lightbox-img{width:min(100%,1000px); height:min(78vh,100%); background-size:contain; background-position:center; background-repeat:no-repeat;}
+  .lightbox-cap{color:#fff; font-size:.9rem; font-weight:600; text-align:center;}
+</style>
+</head>
+<body>
+
+  <a class="skip-link" href="#workRows">Skip to work</a>
+
+  <nav id="nav" aria-label="Main">
+    <div class="logo">ARDIAN<span>BAGUS</span></div>
+    <ul class="nav-links">
+      <li><a href="#work">Work</a></li>
+      <li><a href="#about">About</a></li>
+      <li><a href="#contact">Contact</a></li>
+    </ul>
+  </nav>
+
+  <header class="hero grain" id="heroSection">
+    <div class="hero-photo"></div>
+    <div class="hero-content">
+      <span class="eyebrow">Portfolio</span>
+      <h1 class="hero-title display">Ardian<br>Bagus</h1>
+      <p class="hero-tagline">Crafting impactful brand narratives and cooking up innovative strategies — with a little fun along the way.</p>
+      <div class="hero-actions">
+        <button class="btn btn-primary" onclick="document.getElementById('work').scrollIntoView({behavior:'smooth'})">▶ Browse Work</button>
+        <button class="btn btn-secondary" onclick="document.getElementById('about').scrollIntoView({behavior:'smooth'})">More About Me</button>
+      </div>
+    </div>
+  </header>
+
+  <div class="filter-bar" id="work" role="group" aria-label="Filter work">
+    <button class="filter-pill active" data-filter="all" aria-pressed="true" onclick="setFilter('all')">All Work</button>
+    <button class="filter-pill" data-filter="Company" aria-pressed="false" onclick="setFilter('Company')">Company</button>
+    <button class="filter-pill" data-filter="Student Organization" aria-pressed="false" onclick="setFilter('Student Organization')">Student Organization</button>
+    <button class="filter-pill" data-filter="Competition" aria-pressed="false" onclick="setFilter('Competition')">Competition</button>
+  </div>
+
+  <main id="workRows" aria-live="polite"></main>
+
+  <section id="about">
+    <div class="about-grid">
+      <div class="about-left">
+        <h2 class="display">About</h2>
+        <p>Hello, it's me, Ardian! I'm a dynamic and ambitious individual with a boundless passion for crafting impactful brand narratives and cooking up innovative strategies. Eager to bring creativity and dedication to every project, I'm always on the hunt for new ways to excel in brand building and have some fun along the way!</p>
+        <p>Marketing Enthusiast</p>
+        <div class="contact-links">
+          <a href="https://mail.google.com/mail/?view=cm&fs=1&to=ardianbagusan@gmail.com" target="_blank" rel="noopener noreferrer">Contact Me</a>
+          <a href="https://www.linkedin.com/in/ardianbs/" target="_blank" rel="noopener noreferrer">LinkedIn</a>
+          <a href="https://drive.google.com/file/d/1dYN28zlrCpk17xDq918lLTLwtViSAYQi/view?usp=sharing" target="_blank" rel="noopener noreferrer">Resume</a>
+        </div>
+        <img class="about-portrait" src="./about_portrait.png" alt="Portrait of Ardian Bagus" loading="lazy"><!-- <-- taruh foto potret Anda di media/about_portrait.png -->
+      </div>
+
+      <div class="journey-block">
+        <h2 class="display">My Journey</h2>
+        <div class="journey" id="journey">
+          <svg class="journey-path" aria-hidden="true"><path d=""/></svg>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <footer id="contact">
+    <span>Ardian Bagus — Portfolio</span>
+    <span>© 2026. Built with care.</span>
+  </footer>
+
+  <button class="detail-close" id="closeBtn" type="button" onclick="closeDetail()" aria-label="Close">✕</button>
+  <div class="detail-overlay" id="detailOverlay" role="dialog" aria-modal="true" aria-label="Project detail" tabindex="-1"></div>
+  <div class="lightbox" id="lightbox" role="dialog" aria-label="Enlarged photo" onclick="closeLightbox()">
+    <div class="lightbox-img" id="lightboxImg"></div>
+    <div class="lightbox-cap" id="lightboxCap"></div>
+  </div>
+<button id="scrollToTopBtn" onclick="window.scrollTo({top: 0, behavior: 'smooth'})" aria-label="Scroll to top">↑</button>
+
+<script>
+const IMG = {
+  
+  hero_profile: "./hero_profile.jpeg", 
+  
+  
+  logo_garuda: "./logo_garuda.png", 
+  garuda_banner: "./garuda_banner.jpeg",
+  garuda_landing_page: "./garuda_landing_page.png",
+  garuda_tiktok: "./garuda_tiktok.png",
+  garuda_destination: "./garuda_destination.png",
+  garuda_deck: "./garuda_deck.png",
+  garuda_certificate: "./garuda_certificate.png", 
+  garuda_most_viewed: "./garuda_most_viewed.png",
+  logo_growlab: "./growlab_logo.jpg",      
+  growlab_meeting: "./growlab_meeting.jpeg",         
+  growlab_moderator: "./growlab_moderator.jpeg",     
+  growlab_webinar: "./growlab_webinar.jpeg",        
+  growlab_video_cover: "./growlab_video_cover.png", 
+  garuda_singapore: "./garuda_singapore.png",
+
+
+  logo_hima: "./logo_hima.png",
+  hima_banner: "./hima_banner.jpeg",
+  hima_team: "./hima_team.png",
+  hima_content: "./hima_content.png",
+
+
+  logo_bem: "./logo_bem.jpeg",
+  bem_banner: "./bem_banner.png",
+  bem_seragam: "./bem_seragam.png",
+  bem_sola_pic: "./bem_sola_pic.png",
+  bem_youthpreneur: "./bem_youthpreneur.jpeg",
+
+
+  logo_sola: "./logo_sola.png",
+  sola_banner: "./sola_banner.jpeg",
+  sola_merch: "./sola_merch.png",
+  sola_booth: "./sola_booth.jpeg",
+  sola_doc: "./sola_doc.png",
+
+
+  logo_hometheatre: "./logo_hometheatre.png",
+  homethe_banner: "./homethe_banner.jpeg",
+  homethe_story1: "./homethe_story1.jpeg",
+  homethe_story2: "./homethe_story2.png", 
+  
+  logo_ideation: "./logo_ideation.png",
+  ideation_banner: "./ideation_banner.jpeg",
+  ideation_cert: "./ideation_cert.jpeg",
+  ideation_pitch: "./ideation_pitch.png",
+
+ 
+  logo_awf: "./logo_awf.png",
+  awf_banner: "./awf_banner.jpeg",
+  awf_cert: "./awf_cert.jpeg",
+  awf_research: "./awf_research (2).png",
+
+
+  /* BLIBLI — put these 6 files next to index.html (banner is optional) */
+  logo_blibli: "./logo_blibli.png",
+  blibli_banner: "./blibli_banner.jpeg",
+  blibli_1: "./blibli_1.jpeg",
+  blibli_2: "./blibli_2.jpeg",
+  blibli_3: "./blibli_3.jpeg",
+  blibli_4: "./blibli_4.jpeg",
+
+  logo_worldinvent: "./logo_worldinvent.png",
+  worldinvent_banner: "./worldinvent_banner.jpeg",
+  worldinvent_cert: "./worldinvent_cert.jpeg",
+  worldinvent_medal: "./worldinvent_medal.jpeg"
+};
+
+document.documentElement.style.setProperty('--hero-photo-url', `url(${IMG.hero_profile})`);
+
+const PROJECTS = [
+  {
+    id:10, slug:"blibli", category:"Professional", workType:"Company",
+    theme:"blibli",
+    logo:"logo_blibli", orgName:"Blibli",
+    title:"Seller Experience & Improvement Intern",
+    badge:"13 materials",
+    role:"Seller Experience & Improvement Intern",
+    timeline:"2026 – Present",
+    overview:"Interning on the Seller Experience & Improvement team at Blibli, focused on how Blibli communicates with its sellers: the writing, the seller journey, and the channels sellers rely on.",
+    myRole:"Researched the seller platforms of TikTok Shop, Lazada, and Shopee, focusing on their seller-facing writing and journey, to find improvements for Blibli. Produced 13 seller communication materials for Blibli Seller, including revamping 5 help articles and writing 2 new ones for internal requestors, working with requestors and internal teams. Currently drafting SOPs and guidelines for writing, operations, and rules across Blibli's seller communication channels (in progress).",
+    impact:[
+      {value:"13", label:"Seller communication materials"},
+      {value:"5", label:"Help articles revamped"},
+      {value:"2", label:"New articles written"},
+      {value:"3", label:"Competitor platforms researched"}
+    ],
+    banner:"blibli_banner",
+    /* Add a caption to each photo once you decide what it shows */
+    gallery:[
+      {img:"blibli_1", caption:""},
+      {img:"blibli_2", caption:""},
+      {img:"blibli_3", caption:""},
+      {img:"blibli_4", caption:""}
+    ]
+  },
+  {
+    id:1, slug:"garuda-indonesia", category:"Professional", workType:"Company",
+    logo:"logo_garuda", orgName:"PT Garuda Indonesia (Persero) Tbk",
+    title:"Media Marketing Communication Intern",
+    badge:"23 LPs",
+    teamSize:"7",
+    role:"Media Marketing Communication Intern",
+    overview:"Interned on the Media & Marketing Communication team at PT Garuda Indonesia (Persero) Tbk, producing content and campaign material across landing pages, social video, storyboards, destination copywriting, and strategy decks to support brand awareness and sales.",
+    myRole:"Produced digital content end-to-end for the marketing team: building landing pages for promos, directing short-form TikTok content, writing destination guides, developing tourism storyboards, and putting together data-backed strategy decks.",
+    impact:[
+      {value:"23", label:"Landing pages"},
+      {value:"4", label:"TikTok videos"},
+      {value:"54", label:"Destination guides"},
+      {value:"2", label:"Tourism storyboards"},
+      {value:"3+", label:"Strategy decks"}
+    ],
+    videoHighlight: {
+      title: "Visit Singapore Campaign",
+      desc: "A special project video highlighting Singapore tourism, Copywrite by me and script to end during my time at Garuda Indonesia.",
+      url: "https://www.instagram.com/reel/DUVWO_BCTey/",
+      cover: "garuda_singapore",
+      linkLabel: "▶ Watch on Instagram"
+    },
+    mostViewed: {
+      img: "garuda_most_viewed",
+      caption: "Compared to hundreds of Garuda Indonesia videos",
+      banner: "This is the most viewed video"
+    },
+    certificate:{
+      img:"garuda_certificate",
+      title:"Internship Certificate — PT Garuda Indonesia (Persero) Tbk",
+      desc:"Certificate of completion, Media Marketing Communication internship."
+    },
+    banner:"garuda_banner",
+    gallery:[
+      {img:"garuda_landing_page", caption:"Landing page — Fun Monday with GIUC"},
+      {img:"garuda_tiktok", caption:"TikTok — ASMR A330 Edition", link:"https://www.tiktok.com/@garuda.indonesia/video/7575098303604428040"},
+      {img:"garuda_destination", caption:"Destination guide — Visit Ambon"},
+      {img:"garuda_deck", caption:"Strategy deck — social media positioning"}
+    ]
+  },
+  {
+    id:9, slug:"growlab", category:"Professional", workType:"Company",
+    theme:"growlab",
+    logo:"logo_growlab", orgName:"PT Growlab Digital Solution — Indonesia",
+    title:"Business Development Intern",
+    badge:"180+ prospects",
+    role:"Business Development Intern",
+    timeline:"Aug 2024 – Dec 2024",
+    overview:"PT Growlab Digital Solution is a business-enablement platform providing website development, social media management, and strategic education tools to drive digital growth for Indonesian MSMEs.",
+    myRole:"Delivered 10+ weekly educational webinars end-to-end — managing content creation, promotional materials, registration, moderation, and live presentation — directly supporting audience engagement and community growth. Conducted outreach to 180+ prospects from a structured database, managing communications and converting 6 into active leads, and initiated an internal business strategy proposal analyzing client profiles and business models to improve the conversion approach.",
+    impact:[
+      {value:"10+", label:"Weekly webinars delivered"},
+      {value:"180+", label:"Prospects contacted"},
+      {value:"6", label:"Active leads converted"}
+    ],
+    videoHighlight: {
+      title: "Speaker & Moderator Highlight",
+      desc: "LinkedIn video of me presenting business-development concepts and appearing as a narasumber (guest speaker) at Growlab's event.",
+      url: "https://www.linkedin.com/posts/growlab-id_kalian-punya-brand-dan-mau-cepet-naik-brand-ugcPost-7281123888434991104--gTm?utm_source=share&utm_medium=member_ios&rcm=ACoAADaDZ5YBkEeojaL9i67INYCv_Mxze2wNO4o", 
+      cover: "growlab_video_cover",
+      linkLabel: "▶ Watch on LinkedIn"
+    },
+    banner:"growlab_webinar",
+    gallery:[
+      {img:"growlab_meeting", caption:"Weekly team meeting"},
+      {img:"growlab_moderator", caption:"Moderating the event"},
+      {img:"growlab_webinar", caption:"Webinar — talking about e-commerce"}
+    ]
+  },
+  {
+    id:2, slug:"hima", category:"Organization", workType:"Student Organization",
+    theme:"hima",
+    logo:"logo_hima", orgName:"HIMA Manajemen Komunikasi — Sosial & Lingkungan",
+    title:"Camping Class — PIC",
+    badge:"2 NGO partners",
+    teamSize:"10",
+    role:"PIC, Camping Class (Sosial & Lingkungan Division)",
+    overview:"As PIC for Camping Class within HIMA Manajemen Komunikasi's Sosial & Lingkungan division, curated an outdoor learning event in partnership with two NGOs — Sisa Pilah and Waktu Loang — teaching participants paper recycling through hands-on experience.",
+    myRole:"Designed and led the Camping Class program end-to-end: partnering with two NGOs, building a hands-on recycling activity, presenting to participants on-site, and editing the event's aftermovie recap in CapCut.",
+    banner:"hima_banner",
+    gallery:[
+      {img:"hima_team", caption:"Camping Class — paper recycling workshop", link:"https://www.instagram.com/reel/CyqPXUxS0my/"},
+      {img:"hima_content", caption:"Event aftermovie, edited in CapCut"}
+    ]
+  },
+  {
+    id:3, slug:"bem-fikom", category:"Organization", workType:"Student Organization",
+    theme:"bem",
+    logo:"logo_bem", orgName:"BEM Fakultas Ilmu Komunikasi UNPAD",
+    title:"Staff, Creative Economy",
+    badge:"3 initiatives",
+    teamSize:"19",
+    role:"Staff, Creative Economy Division",
+    overview:"As Creative Economy staff for BEM Fakultas Ilmu Komunikasi UNPAD, worked across three initiatives: leading the BEM uniform (Seragam) project, coordinating the SOLA Market project-officer search and event alignment, and managing external media partnerships for the Youthpreneur event.",
+    myRole:"Led the Seragam BEM project from needs-gathering through vendor sourcing and final brief. For SOLA Market, ran the open project-officer search and kept the event on-brief. For Youthpreneur, sourced and managed media partnerships — including coordinating with Sandiaga Uno's team to secure him as an event speaker.",
+    banner:"bem_banner",
+    gallery:[
+      {img:"bem_seragam", caption:"Seragam BEM — product development"},
+      {img:"bem_sola_pic", caption:"SOLA Market — project officer team"},
+      {img:"bem_youthpreneur", caption:"Youthpreneur — with speaker Sandiaga Uno"}
+    ]
+  },
+  {
+    id:4, slug:"sola-market", category:"Committee", workType:"Student Organization",
+    theme:"sola",
+    logo:"logo_sola", orgName:"SOLA Market",
+    title:"Head of Fundraising",
+    badge:"Team of 13",
+    role:"Head of Fundraising",
+    teamSize:"13",
+    overview:"Led the fundraising division for SOLA Market: developing and selling a merchandise line, securing brand collaborations, and running online and offline marketing — including at the 'Devil's Disco' fundraising event.",
+    myRole:"Owned the fundraising product line end-to-end — reviewing past budgets, curating and briefing new merchandise, sourcing vendors — while leading a team of 13 through open communication and shared decision-making. Also ran the publication, broadcast, and brand-collaboration marketing that drove sales.",
+    impact:[{value:"13", label:"Team members led"}],
+    banner:"sola_banner",
+    gallery:[
+      {img:"sola_merch", caption:"Official SOLA merchandise line"},
+      {img:"sola_booth", caption:"Offline marketing booth"},
+      {img:"sola_doc", caption:"Fundraising budget planning"}
+    ]
+  },
+  {
+    id:5, slug:"home-theatre", category:"Committee", workType:"Student Organization",
+    theme:"hometheatre",
+    logo:"logo_hometheatre", orgName:"Home Theatre",
+    title:"Head of Music Production",
+    badge:"200+ attendees",
+    teamSize:"5",
+    role:"Head of Music Production",
+    overview:"Led music production for Home Theatre's stage production, translating the script into original songs and overseeing development through live performance in front of 200+ attendees.",
+    myRole:"Analyzed the script to identify where songs were needed, set the creative direction for each track, and led curation and production with the music team — from studio sessions through the live show.",
+    impact:[{value:"200+", label:"Event attendees"}],
+    banner:"homethe_banner",
+    gallery:[
+      {img:"homethe_story1", caption:"Live report from the performance"},
+      {img:"homethe_story2", caption:"Event promo — Home Theatre"}
+    ]
+  },
+  {
+    id:6, slug:"ideation", category:"Competition", workType:"Competition",
+    logo:"logo_ideation", orgName:"Epicentrum Universitas Padjadjaran 2024",
+    title:"3rd Place — Ideation",
+    hook:"Team Firstwell — Epicentrum UNPAD 2024",
+    teamSize:"3",
+    badge:"3rd Place",
+    role:"Team Firstwell — Communication Strategy & Branding",
+    overview:"Competed in the Ideation Campaign Competition at Epicentrum Universitas Padjadjaran 2024 (theme: Digital Transformation in ASEAN Education) with team Firstwell, tackling the education gap in underserved ASEAN coastal communities. Placed 3rd.",
+    myRole:"Led the strategic communication approach for 'Semua Bisa Belajar' — a smart-device concept (ALIN) addressing high internet costs and infrastructure gaps in underserved coastal areas — from problem analysis through campaign strategy, and personally designed and modeled the product mockup and branding in Blender.",
+    impact:[{value:"3rd", label:"Place, Epicentrum UNPAD 2024"}],
+    banner:"ideation_banner",
+    gallery:[
+      {img:"ideation_cert", caption:"3rd Place certificate — Epicentrum UNPAD 2024"},
+      {img:"ideation_pitch", caption:"Live pitch — Team Firstwell"}
+    ]
+  },
+  {
+    id:7, slug:"advertising-week-festival", category:"Competition", workType:"Competition",
+    logo:"logo_awf", orgName:"Advertising Week Festival 2024",
+    title:"2nd Place — Brand Innovation",
+    hook:"Team The Emperors — Advertising Week Festival 2024",
+    teamSize:"3",
+    badge:"2nd Place",
+    role:"Team The Emperors — Brand Research & Strategy",
+    overview:"Competed in the Brand Innovation competition at Advertising Week Festival 2024 with team The Emperors, developing a brand-innovation strategy for skincare brand Nina Nugroho grounded in original market research. Placed 2nd.",
+    myRole:"Conducted brand awareness and positioning research, helped shape the brand-innovation concept and visual direction, and built out the SWOT and marketing strategy ahead of the live pitch.",
+    impact:[{value:"2nd", label:"Place, Advertising Week Festival 2024"}],
+    banner:"awf_banner",
+    gallery:[
+      {img:"awf_cert", caption:"2nd Place certificate — AWF 2024"},
+      {img:"awf_research", caption:"Brand research & positioning study"}
+    ]
+  },
+  {
+    id:8, slug:"world-invent-singapore", category:"Competition", workType:"Competition",
+    logo:"logo_worldinvent", orgName:"Universitas Padjadjaran",
+    title:"Student Excellence (Mahasiswa Berprestasi) — Universitas Padjadjaran",
+    hook:"Special Award of Merit — World Invent Singapore 2024",
+    teamSize:"8",
+    badge:"Special Award",
+    role:"Lead Representative",
+    overview:"Represented Universitas Padjadjaran as Mahasiswa Berprestasi at World Invent Singapore 2024, presenting an innovation to an international jury and receiving the Special Award of Merit from the Philippines' Department of Science and Technology.",
+    myRole:"Served as lead representative to the international jury — going deep on how the invention worked and why it mattered — then delivered the pitch alongside a small team.",
+    impact:[{value:"Merit", label:"Special Award, Dept. of Science & Tech (PH)"}],
+    banner:"worldinvent_banner",
+    gallery:[
+      {img:"worldinvent_cert", caption:"Certificate — Mahasiswa Berprestasi UNPAD 2024"},
+      {img:"worldinvent_medal", caption:"Award medal, World Invent Singapore"}
+    ]
+  }
+];
+
+const CATEGORY_TINT = {
+  "Professional":  ["rgba(13,27,51,.55)","rgba(6,11,22,.85)"],
+  "Organization":  ["rgba(20,41,77,.5)","rgba(6,11,22,.85)"],
+  "Committee":     ["rgba(10,23,48,.55)","rgba(6,11,22,.87)"],
+  "Competition":   ["rgba(35,64,120,.45)","rgba(6,11,22,.85)"]
+};
+
+const THEMES = {
+  blibli:{
+    vars:{
+      "--void":"#f6fbff","--deep-sea":"#e3f2fc","--ink":"#d3eaf9","--ink-soft":"#c3e1f5",
+      "--signal":"#0095da","--signal-bright":"#0077b0","--ice":"#0b2233","--mist":"#587386"
+    },
+    tint:["rgba(8,45,72,.5)","rgba(4,16,28,.86)"]
+  },
+
+  growlab:{
+    vars:{
+      "--void":"#ffffff","--deep-sea":"#f1f1f1","--ink":"#e7e7e7","--ink-soft":"#dddddd",
+      "--signal":"#111111","--signal-bright":"#111111","--ice":"#141414","--mist":"#6d6d6d"
+    },
+    tint:["rgba(18,18,18,.55)","rgba(4,4,4,.88)"]
+  },
+  
+  hima:{
+    vars:{
+      "--void":"#faf8ff","--deep-sea":"#f0e9fb","--ink":"#e5daf7","--ink-soft":"#dacbf3",
+      "--signal":"#6d28d9","--signal-bright":"#5b21b6","--ice":"#241238","--mist":"#7a6a9c"
+    },
+    tint:["rgba(42,23,71,.5)","rgba(12,6,20,.86)"]
+  },
+  
+  bem:{
+    vars:{
+      "--void":"#fcfbf4","--deep-sea":"#f1eeda","--ink":"#e7e6cb","--ink-soft":"#dcddbd",
+      "--signal":"#2f7d4b","--signal-bright":"#256b3f","--ice":"#1d2b20","--mist":"#71806a"
+    },
+    tint:["rgba(32,57,39,.5)","rgba(10,18,11,.86)"]
+  },
+  
+  hometheatre:{
+    vars:{
+      "--void":"#ffffff","--deep-sea":"#f5f2ee","--ink":"#ece7e0","--ink-soft":"#e2dbd2",
+      "--signal":"#d9531e","--signal-bright":"#c2410c","--ice":"#191410","--mist":"#79726b"
+    },
+    tint:["rgba(23,20,18,.55)","rgba(6,6,6,.88)"]
+  },
+ 
+  sola:{
+    vars:{
+      "--void":"#fff8fb","--deep-sea":"#fae7f1","--ink":"#f4d9e8","--ink-soft":"#eccadd",
+      "--signal":"#d6336c","--signal-bright":"#b02465","--ice":"#31102a","--mist":"#96637f"
+    },
+    tint:["rgba(59,21,51,.5)","rgba(21,7,19,.86)"]
+  }
+};
+
+function bg(key, cat, themeName){
+  const th = THEMES[themeName];
+  const [a,b] = (th && th.tint) || CATEGORY_TINT[cat] || CATEGORY_TINT["Organization"];
+  const grad = `linear-gradient(160deg, ${a}, ${b})`;
+  
+  return (key && IMG[key]) ? `${grad}, url(${IMG[key]})` : grad;
+}
+
+let currentFilter = "all";
+function setFilter(f){
+  currentFilter = f;
+  document.querySelectorAll(".filter-pill").forEach(b=>{
+    const on = b.dataset.filter===f;
+    b.classList.toggle("active", on);
+    b.setAttribute("aria-pressed", on);
+  });
+  renderRows();
+}
+
+function renderRows(){
+  const categoryOrder = ["Professional","Competition","Committee","Organization"];
+  const main = document.getElementById("workRows");
+  main.innerHTML = categoryOrder.map(cat=>{
+    const items = PROJECTS.filter(p=> p.category===cat && (currentFilter==="all" || p.workType===currentFilter));
+    if(!items.length) return "";
+    const cards = items.map(p=>`
+        <div class="card grain" tabindex="0" role="button" aria-label="${p.title} — ${p.orgName}"
+             onclick="openDetail(${p.id})" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();openDetail(${p.id})}">
+          <div class="card-art" style="background-image:${bg(p.banner, p.category, p.theme)}"></div>
+          <div class="card-type">${p.workType}</div>
+          <div class="card-badge">${p.badge}</div>
+          <div class="card-overlay">
+            <span class="card-cat">${p.category}</span>
+            <div class="card-title">${p.title}</div>
+            <div class="card-hook">${p.hook || p.orgName}</div>
+          </div>
+        </div>`).join("");
+    return `
+      <section class="row">
+        <h2 class="row-title">${cat}</h2>
+        <div class="row-wrap">
+          <button class="row-arrow left" aria-label="Scroll left" onclick="scrollRow(this,-1)">‹</button>
+          <div class="row-track">${cards}</div>
+          <button class="row-arrow right" aria-label="Scroll right" onclick="scrollRow(this,1)">›</button>
+        </div>
+      </section>`;
+  }).join("");
+}
+
+function scrollRow(btn, dir){
+  const track = btn.parentElement.querySelector(".row-track");
+  track.scrollBy({left: dir * track.clientWidth * 0.85, behavior:"smooth"});
+}
+
+function openDetail(id){
+  const p = PROJECTS.find(x=>x.id===id);
+  const overlay = document.getElementById("detailOverlay");
+
+  const THEME_VARS = ["--void","--deep-sea","--ink","--ink-soft","--signal","--signal-bright","--ice","--mist"];
+  const theme = THEMES[p.theme];
+  THEME_VARS.forEach(v=>{
+    if(theme && theme.vars[v]) overlay.style.setProperty(v, theme.vars[v]);
+    else overlay.style.removeProperty(v);
+  });
+
+  const metaItems = [
+    `<div class="meta-item"><div class="meta-label">Role</div><div class="meta-value">${p.role}</div></div>`,
+    p.timeline ? `<div class="meta-item"><div class="meta-label">Timeline</div><div class="meta-value">${p.timeline}</div></div>` : "",
+    `<div class="meta-item"><div class="meta-label">Type</div><div class="meta-value">${p.workType}</div></div>`,
+    p.teamSize ? `<div class="meta-item"><div class="meta-label">Team</div><div class="meta-value">${p.teamSize} people</div></div>` : ""
+  ].join("");
+
+  const impactBlock = p.impact ? `
+      <div class="detail-section">
+        <h3>Impact</h3>
+        <div class="impact-grid">
+          ${p.impact.map(s=>`
+            <div class="impact-stat">
+              <div class="impact-value mono">${s.value}</div>
+              <div class="impact-label">${s.label}</div>
+            </div>`).join("")}
+        </div>
+      </div>` : "";
+
+  const videoBlock = p.videoHighlight ? `
+      <div class="detail-section">
+        <h3>Special Project: ${p.videoHighlight.title}</h3>
+        <div style="background:var(--ink-soft); border:1px solid rgba(234,240,255,.08); border-radius:8px; padding:1.5rem; display:flex; gap:1.5rem; align-items:center; flex-wrap:wrap;">
+          <div style="flex:1; min-width:200px;">
+            <p style="margin-bottom:1rem; font-size:.95rem;">${p.videoHighlight.desc}</p>
+            <a href="${p.videoHighlight.url}" target="_blank" rel="noopener noreferrer" class="btn btn-primary" style="text-decoration:none; display:inline-flex;">${p.videoHighlight.linkLabel || "▶ Watch Video"}</a>
+          </div>
+          <div style="width:min(100%, 300px); aspect-ratio:16/9; background-image:url(${IMG[p.videoHighlight.cover]}); background-size:cover; background-position:center; border-radius:6px; border:1px solid rgba(255,255,255,.1);"></div>
+        </div>
+      </div>` : "";
+
+  const mostViewedBlock = p.mostViewed ? `
+      <div class="detail-section">
+        <div class="mostviewed-wrap">
+          <div class="mostviewed-caption">${p.mostViewed.caption}</div>
+          <div class="mostviewed-media"><img src="${IMG[p.mostViewed.img]}" alt="${p.mostViewed.banner}" loading="lazy"></div>
+          <div class="mostviewed-banner">${p.mostViewed.banner}</div>
+        </div>
+      </div>` : "";
+
+  const certBlock = p.certificate ? `
+      <div class="detail-section">
+        <h3>Certificate</h3>
+        <div class="cert-hero grain">
+          <img src="${IMG[p.certificate.img]}" alt="${p.certificate.title}" loading="lazy">
+          <div class="cert-caption">
+            <div class="cert-title">${p.certificate.title}</div>
+            ${p.certificate.desc ? `<p>${p.certificate.desc}</p>` : ""}
+          </div>
+        </div>
+      </div>` : "";
+
+  const galleryBlock = (p.gallery && p.gallery.length) ? `
+      <div class="detail-section">
+        <h3>Gallery</h3>
+        <div class="gallery-grid">
+          ${p.gallery.map(g=>`
+            <div class="gallery-wrapper">
+              <a ${g.link ? `href="${g.link}" target="_blank" rel="noopener noreferrer"` : ""} 
+                 class="gallery-item" 
+                 style="background-image:url(${IMG[g.img]}); cursor:${g.link ? 'pointer' : 'default'}">
+                ${g.caption ? `<span>${g.caption}</span>` : ""}
+              </a>
+            </div>`).join("")}
+        </div>
+      </div>` : "";
+
+  overlay.innerHTML = `
+    <div class="detail-banner grain" style="background-image:${bg(p.banner, p.category, p.theme)}">
+      <div class="detail-banner-content">
+        <div class="detail-org">
+          <img src="${IMG[p.logo]}" alt="" onerror="this.style.display='none'">
+          <span class="detail-cat">${p.category}</span>
+        </div>
+        <h1 class="detail-title">${p.title}</h1>
+        <div class="detail-org-name">${p.orgName}</div>
+      </div>
+    </div>
+    <div class="detail-body">
+      <div class="detail-inner">
+      <div class="meta-row">${metaItems}</div>
+
+      <div class="detail-section">
+        <h3>Overview</h3>
+        <p>${p.overview}</p>
+      </div>
+
+      <div class="detail-section">
+        <h3>My Role</h3>
+        <p>${p.myRole}</p>
+      </div>
+
+      ${impactBlock}
+      
+      ${videoBlock}
+
+      ${mostViewedBlock}
+
+      ${galleryBlock}
+
+      ${certBlock}
+      </div>
+    </div>
+  `;
+
+  lastFocus = document.activeElement;
+  overlay.classList.add("open");
+  document.getElementById("closeBtn").style.display = "flex";
+  document.body.style.overflow = "hidden";
+  overlay.scrollTop = 0;
+  overlay.focus({preventScroll:true});
+  if(!(history.state && history.state.detail)) history.pushState({detail:id}, "", projectUrl(p));
+
+  const canHover = window.matchMedia("(hover: hover) and (pointer: fine)").matches;
+
+  // Touch devices: tap a photo to enlarge it (photos with a link still open the link)
+  if(!canHover) overlay.querySelectorAll('.gallery-item:not([href])').forEach(item=>{
+    item.setAttribute('role','button'); item.tabIndex = 0;
+    const open = ()=>openLightbox(item.style.backgroundImage, item.textContent.trim());
+    item.addEventListener('click', open);
+    item.addEventListener('keydown', e=>{ if(e.key==='Enter'||e.key===' '){ e.preventDefault(); open(); } });
+  });
+}
+
+let lastFocus = null;
+
+function projectUrl(p){ return window.PATH_BASE ? window.PATH_BASE + p.slug : "#" + p.slug; }
+function homeUrl(){ return window.PATH_BASE ? window.PATH_BASE : location.pathname + location.search; }
+
+// /Portofolio/blibli, index.html#blibli and old #project-10 links all resolve to a project
+function projectFromHash(){
+  const cands = [];
+  if(window.PATH_BASE) cands.push(decodeURIComponent(location.pathname.slice(window.PATH_BASE.length)).replace(/\/+$/,""));
+  cands.push(decodeURIComponent(location.hash.slice(1)));
+  for(const raw of cands){
+    const h = raw.toLowerCase(), legacy = h.match(/^project-(\d+)$/);
+    const hit = PROJECTS.find(p=> p.slug === h || (legacy && p.id === +legacy[1]));
+    if(hit) return hit;
+  }
+}
+
+function hideDetail(){
+  document.getElementById("detailOverlay").classList.remove("open");
+  document.getElementById("closeBtn").style.display = "none";
+  document.body.style.overflow = "";
+  if(lastFocus && lastFocus.focus) lastFocus.focus({preventScroll:true});
+}
+
+// Close = go back one history step, so the browser Back button also closes the page.
+// If the page was opened straight from a link (nothing to go back to), just reset the URL.
+function closeDetail(){
+  const st = history.state;
+  if(st && st.detail && !st.deep) history.back();
+  else { if(st && st.detail) history.replaceState(null, "", homeUrl()); hideDetail(); }
+}
+window.addEventListener("popstate", ()=>{
+  const open = document.getElementById("detailOverlay").classList.contains("open");
+  const hit = projectFromHash();
+  if(hit) openDetail(hit.id);
+  else if(open) hideDetail();
+});
+
+function openLightbox(bgImage, caption){
+  document.getElementById("lightboxImg").style.backgroundImage = bgImage;
+  document.getElementById("lightboxCap").textContent = caption || "";
+  document.getElementById("lightbox").classList.add("open");
+}
+function closeLightbox(){ document.getElementById("lightbox").classList.remove("open"); }
+
+document.addEventListener("keydown", e=>{
+  if(e.key === "Escape"){
+    if(document.getElementById("lightbox").classList.contains("open")) closeLightbox();
+    else if(document.getElementById("detailOverlay").classList.contains("open")) closeDetail();
+    return;
+  }
+  // Keep Tab inside the open detail page
+  if(e.key === "Tab" && document.getElementById("detailOverlay").classList.contains("open")){
+    const items = [document.getElementById("closeBtn"), ...document.querySelectorAll("#detailOverlay a[href], #detailOverlay [tabindex='0']")];
+    const first = items[0], last = items[items.length-1];
+    if(e.shiftKey && (document.activeElement === first || document.activeElement === document.getElementById("detailOverlay"))){ e.preventDefault(); last.focus(); }
+    else if(!e.shiftKey && document.activeElement === last){ e.preventDefault(); first.focus(); }
+  }
+});
+document.getElementById("closeBtn").style.display = "none";
+
+window.addEventListener("scroll", ()=>{
+  document.getElementById("nav").classList.toggle("scrolled", window.scrollY > 40);
+  const topBtn = document.getElementById("scrollToTopBtn");
+  if(window.scrollY > 400) {
+    topBtn.classList.add("show");
+  } else {
+    topBtn.classList.remove("show");
+  }
+});
+
+renderRows();
+
+const JOURNEY = [
+  {year:"Aug 2022", title:"Started University", x:12,
+   desc:"Joined the Faculty of Communication Science (Manajemen Komunikasi), Universitas Padjadjaran.",
+   summary:"The starting point — communication science at Universitas Padjadjaran, where everything on this timeline began.",
+   images:[]},
+  {year:"2023", title:"Student Organizations", x:40,
+   desc:"Staff of Creative Economy at BEM Fikom UNPAD and PIC of Camping Class at HIMA Manajemen Komunikasi.",
+   summary:"Ran the Seragam BEM project and Youthpreneur media partnerships at BEM Fikom, and led HIMA's Camping Class with two NGO partners.",
+   images:["bem_seragam","bem_youthpreneur","hima_team"]},
+  {year:"2023", title:"Committee Leadership", x:68,
+   desc:"Head of Fundraising at SOLA Market and Head of Music Production at Home Theatre.",
+   summary:"Led a fundraising team of 13 at SOLA Market and produced original music for Home Theatre's 200+ attendee stage show.",
+   images:["sola_merch","homethe_story1"]},
+  {year:"2024", title:"Competition Season", x:42,
+   desc:"3rd place at Ideation (Epicentrum UNPAD), 2nd place at AWF Brand Innovation, and Special Award of Merit at World Invent Singapore.",
+   summary:"Three podiums in one year: Ideation (3rd), AWF Brand Innovation (2nd), and a Special Award of Merit at World Invent Singapore.",
+   images:["ideation_cert","awf_cert","worldinvent_medal"]},
+  {year:"Aug–Dec 2024", title:"Growlab Digital Solution", x:14,
+   desc:"Business Development Intern — webinars, prospect outreach, and business strategy for Indonesian MSMEs.",
+   summary:"10+ weekly webinars delivered end-to-end, 180+ prospects contacted, and 6 converted into active leads.",
+   images:["growlab_meeting","growlab_webinar"]},
+  {year:"2025", title:"Garuda Indonesia", x:55,
+   desc:"Media Marketing Communication Intern — landing pages, TikTok content, destination guides, and strategy decks.",
+   summary:"23 landing pages, 4 TikToks, 54 destination guides, and 2 tourism storyboards for Indonesia's national airline.",
+   images:["garuda_landing_page","garuda_tiktok","garuda_destination"]},
+  {year:"Feb 2026", title:"Graduated from UNPAD", x:22,
+   desc:"Graduated from the Faculty of Communication Science, Universitas Padjadjaran.",
+   summary:"Closed the university chapter — graduated from Fikom UNPAD, three and a half years after it all started.",
+   images:[]},
+  {year:"2026", title:"Blibli", x:62,
+   desc:"Seller Experience & Improvement Intern — seller communication, competitor research, and writing guidelines.",
+   summary:"13 seller communication materials produced, 3 competitor seller platforms researched, and SOPs and guidelines for seller communication channels in progress.",
+   images:["blibli_1","blibli_2","blibli_3","blibli_4"]}
+];
+
+function renderJourney(){
+  const wrap = document.getElementById("journey");
+  if(!wrap) return;
+  wrap.querySelectorAll(".journey-item").forEach(el=>el.remove());
+  JOURNEY.forEach(m=>{
+    const el = document.createElement("div");
+    el.className = "journey-item" + (m.x > 55 ? " flip" : "");
+    el.style.setProperty("--jx", m.x + "%");
+    el.innerHTML = `
+      <div class="journey-dot"></div>
+      <div class="journey-text">
+        <div class="journey-year">${m.year}</div>
+        <div class="journey-title">${m.title}</div>
+        <div class="journey-desc">${m.desc}</div>
+      </div>`;
+    wrap.appendChild(el);
+  });
+  requestAnimationFrame(drawJourneyPath);
+
+  const items = wrap.querySelectorAll(".journey-item");
+  if("IntersectionObserver" in window){
+    const io = new IntersectionObserver(entries=>{
+      entries.forEach(e=>{
+        if(e.isIntersecting){ e.target.classList.add("in-view"); io.unobserve(e.target); }
+      });
+    }, {threshold:.35});
+    items.forEach(el=>io.observe(el));
+  } else {
+    items.forEach(el=>el.classList.add("in-view"));
+  }
+}
+
+function drawJourneyPath(){
+  const wrap = document.getElementById("journey");
+  if(!wrap) return;
+  const svg = wrap.querySelector(".journey-path");
+  const dots = [...wrap.querySelectorAll(".journey-dot")];
+  if(!svg || dots.length < 2) return;
+  const wr = wrap.getBoundingClientRect();
+  svg.setAttribute("viewBox", `0 0 ${Math.round(wr.width)} ${Math.round(wr.height)}`);
+  const pts = dots.map(d=>{
+    const r = d.getBoundingClientRect();
+    return {x: r.left - wr.left + r.width/2, y: r.top - wr.top + r.height/2};
+  });
+  let dAttr = `M ${pts[0].x.toFixed(1)} ${pts[0].y.toFixed(1)}`;
+  for(let i=1; i<pts.length; i++){
+    const a = pts[i-1], b = pts[i], my = ((a.y + b.y)/2).toFixed(1);
+    dAttr += ` C ${a.x.toFixed(1)} ${my}, ${b.x.toFixed(1)} ${my}, ${b.x.toFixed(1)} ${b.y.toFixed(1)}`;
+  }
+  svg.querySelector("path").setAttribute("d", dAttr);
+}
+window.addEventListener("resize", drawJourneyPath);
+
+let journeyPopup = null;
+function initJourneyPopups(){
+  if(!window.matchMedia("(hover: hover) and (pointer: fine)").matches) return;
+  if(!journeyPopup){
+    journeyPopup = document.createElement("div");
+    journeyPopup.className = "journey-popup";
+    document.body.appendChild(journeyPopup);
+    window.addEventListener("scroll", ()=>journeyPopup.classList.remove("show"), {passive:true});
+  }
+  document.querySelectorAll("#journey .journey-item").forEach((el, i)=>{
+    const m = JOURNEY[i];
+    el.addEventListener("mouseenter", ()=>{
+      const imgs = (m.images || []).filter(k=>IMG[k]);
+      journeyPopup.innerHTML = `
+        <div class="jp-year">${m.year}</div>
+        <div class="jp-title">${m.title}</div>
+        <div class="jp-summary">${m.summary || m.desc}</div>
+        ${imgs.length ? `<div class="jp-images">${imgs.map(k=>`<div style="background-image:url(${IMG[k]})"></div>`).join("")}</div>` : ""}`;
+  
+      journeyPopup.style.visibility = "hidden";
+      journeyPopup.classList.add("show");
+      const pw = journeyPopup.offsetWidth, ph = journeyPopup.offsetHeight;
+      const dot = el.querySelector(".journey-dot");
+      const r = dot.getBoundingClientRect();
+      const jr = document.getElementById("journey").getBoundingClientRect();
+
+      let x = r.right + 16;
+      if(x + pw > window.innerWidth - 12) x = window.innerWidth - pw - 12;
+      x = Math.max(x, jr.left);
+
+      let y = r.top - ph - 14;
+      if(y < 12) y = r.bottom + 14;
+      y = Math.max(12, Math.min(y, window.innerHeight - ph - 12));
+
+      journeyPopup.style.left = x + "px";
+      journeyPopup.style.top = y + "px";
+      journeyPopup.style.visibility = "";
+    });
+    el.addEventListener("mouseleave", ()=>journeyPopup.classList.remove("show"));
+  });
+}
+
+renderJourney();
+initJourneyPopups();
+
+// Highlight the current section in the nav
+(function(){
+  const links = [...document.querySelectorAll(".nav-links a")];
+  const targets = links.map(a=>document.querySelector(a.getAttribute("href")));
+  function spy(){
+    const y = window.scrollY + 140;
+    let cur = -1;
+    targets.forEach((t,i)=>{ if(t && t.offsetTop <= y) cur = i; });
+    if(window.innerHeight + window.scrollY >= document.body.scrollHeight - 4) cur = links.length - 1;
+    links.forEach((a,i)=>a.classList.toggle("active", i===cur));
+  }
+  window.addEventListener("scroll", spy, {passive:true});
+  spy();
+})();
+
+// Open a project directly from a link like index.html#blibli
+(function(){
+  const hit = projectFromHash();
+  if(hit){
+    history.replaceState({detail:hit.id, deep:true}, "", projectUrl(hit));
+    openDetail(hit.id);
+  }
+})();
+</script>
+</body>
+</html>

@@ -6,6 +6,15 @@
 <title>Ardian Bagus — Portfolio</title>
 <meta name="description" content="Ardian Bagus — Portfolio">
 <meta name="theme-color" content="#f7f9ff">
+<script>
+// Clean project links. On a GitHub Pages project site (user.github.io/Repo/) a project opens at
+// /Repo/blibli (needs 404.html = copy of index.html). Anywhere else it falls back to index.html#blibli.
+(function(){
+  var parts = location.pathname.split('/').filter(Boolean);
+  window.PATH_BASE = (/\.github\.io$/.test(location.hostname) && parts.length) ? '/' + parts[0] + '/' : null;
+  if(window.PATH_BASE){ var b = document.createElement('base'); b.href = window.PATH_BASE; document.head.appendChild(b); }
+})();
+</script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="anonymous">
 <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:ital,wght@0,300..800;1,300..800&display=swap" rel="stylesheet">
@@ -1117,7 +1126,7 @@ function openDetail(id){
   document.body.style.overflow = "hidden";
   overlay.scrollTop = 0;
   overlay.focus({preventScroll:true});
-  if(!(history.state && history.state.detail)) history.pushState({detail:id}, "", "#" + p.slug);
+  if(!(history.state && history.state.detail)) history.pushState({detail:id}, "", projectUrl(p));
 
   const canHover = window.matchMedia("(hover: hover) and (pointer: fine)").matches;
 
@@ -1132,11 +1141,19 @@ function openDetail(id){
 
 let lastFocus = null;
 
-// "index.html#blibli" -> the Blibli project (old "#project-10" links still work)
+function projectUrl(p){ return window.PATH_BASE ? window.PATH_BASE + p.slug : "#" + p.slug; }
+function homeUrl(){ return window.PATH_BASE ? window.PATH_BASE : location.pathname + location.search; }
+
+// /Portofolio/blibli, index.html#blibli and old #project-10 links all resolve to a project
 function projectFromHash(){
-  const h = decodeURIComponent(location.hash.slice(1)).toLowerCase();
-  const legacy = h.match(/^project-(\d+)$/);
-  return PROJECTS.find(p=> p.slug === h || (legacy && p.id === +legacy[1]));
+  const cands = [];
+  if(window.PATH_BASE) cands.push(decodeURIComponent(location.pathname.slice(window.PATH_BASE.length)).replace(/\/+$/,""));
+  cands.push(decodeURIComponent(location.hash.slice(1)));
+  for(const raw of cands){
+    const h = raw.toLowerCase(), legacy = h.match(/^project-(\d+)$/);
+    const hit = PROJECTS.find(p=> p.slug === h || (legacy && p.id === +legacy[1]));
+    if(hit) return hit;
+  }
 }
 
 function hideDetail(){
@@ -1146,10 +1163,12 @@ function hideDetail(){
   if(lastFocus && lastFocus.focus) lastFocus.focus({preventScroll:true});
 }
 
-// Close = go back one history step, so the browser Back button also closes the page
+// Close = go back one history step, so the browser Back button also closes the page.
+// If the page was opened straight from a link (nothing to go back to), just reset the URL.
 function closeDetail(){
-  if(history.state && history.state.detail) history.back();
-  else hideDetail();
+  const st = history.state;
+  if(st && st.detail && !st.deep) history.back();
+  else { if(st && st.detail) history.replaceState(null, "", homeUrl()); hideDetail(); }
 }
 window.addEventListener("popstate", ()=>{
   const open = document.getElementById("detailOverlay").classList.contains("open");
@@ -1345,7 +1364,7 @@ initJourneyPopups();
 (function(){
   const hit = projectFromHash();
   if(hit){
-    history.replaceState({detail:hit.id}, "", "#" + hit.slug);
+    history.replaceState({detail:hit.id, deep:true}, "", projectUrl(hit));
     openDetail(hit.id);
   }
 })();
