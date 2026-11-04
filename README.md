@@ -21,7 +21,7 @@ I wanted one place to show my work to recruiters and collaborators, in a form I 
 - Hosted on GitHub Pages
 - Built with AI assistance: Claude (vibe coding)
 
-## How I built it with AI
+## How I built it
 
 - **What I did:** Defined the structure and architecture, made the mockups, wrote the writing guide, set the points the site needs to deliver, and assessed the UX and UI at a surface level.
 - **What AI did:** Revised the code, partially wrote the code, and fixed picture issues.
